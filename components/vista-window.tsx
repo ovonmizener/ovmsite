@@ -112,7 +112,9 @@ export default function VistaWindow({
         className="flex-1 overflow-auto cursor-default" 
         onClick={(e) => e.stopPropagation()}
         style={{
-          marginTop: isFullScreen ? "56px" : undefined
+          marginTop: isFullScreen ? "56px" : undefined,
+          height: isFullScreen ? "calc(100% - 56px)" : "100%",
+          minHeight: "800px"
         }}
       >
         {children}

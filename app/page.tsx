@@ -8,6 +8,7 @@ import VistaWindow from "@/components/vista-window"
 import VistaOrb from "@/components/vista-orb"
 import DesktopIcon from "@/components/desktop-icon"
 import Image from "next/image"
+import React from "react"
 
 const initialIcons = [
   { id: "about", name: "About Me", icon: User, gridX: 0, gridY: 0 },
@@ -83,6 +84,34 @@ interface WindowContentProps {
   selectedImage?: { src: string; alt: string } | null;
   setSelectedImage?: (image: { src: string; alt: string } | null) => void;
 }
+
+const ImageViewer = React.memo(({ selectedImage }: { selectedImage: { src: string; alt: string } | null | undefined }) => {
+  console.log('Rendering ImageViewer with:', selectedImage);
+  return (
+    <div className="text-white h-[800px]">
+      <div className="relative w-full h-full flex items-center justify-center p-8">
+        {selectedImage ? (
+          <div className="relative w-full h-full min-h-[700px]">
+            <Image
+              src={selectedImage.src}
+              alt={selectedImage.alt}
+              fill
+              className="object-contain"
+              priority
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              onError={(e) => console.error('Image failed to load:', e)}
+              onLoad={() => console.log('Image loaded successfully')}
+            />
+          </div>
+        ) : (
+          <div>No image selected</div>
+        )}
+      </div>
+    </div>
+  );
+});
+
+ImageViewer.displayName = 'ImageViewer';
 
 function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, selectedImage, setSelectedImage }: WindowContentProps) {
   const handleImageClick = (index: number) => {
@@ -653,7 +682,19 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: i * 0.1 }}
                   className="aero-glass rounded-lg p-4 aspect-square relative group overflow-hidden cursor-pointer"
-                  onClick={() => handleImageClick(i)}
+                  onClick={() => {
+                    console.log('Gallery image clicked:', i + 1);
+                    if (setSelectedImage && onOpenWindow) {
+                      const imageData = {
+                        src: `/gallery/photo-${i + 1}.jpg`,
+                        alt: `Gallery photo ${i + 1}`
+                      };
+                      console.log('Setting selected image:', imageData);
+                      setSelectedImage(imageData);
+                      console.log('Opening image viewer window');
+                      onOpenWindow("image-viewer");
+                    }
+                  }}
                 >
                   <div className="absolute inset-0">
                     <Image
@@ -694,22 +735,7 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
       )
 
     case "image-viewer":
-      return (
-        <div className="text-white">
-          <div className="relative w-full h-full min-h-[400px] flex items-center justify-center">
-            {selectedImage && (
-              <div className="relative w-full h-full">
-                <Image
-                  src={selectedImage.src}
-                  alt={selectedImage.alt}
-                  fill
-                  className="object-contain"
-                />
-              </div>
-            )}
-          </div>
-        </div>
-      )
+      return <ImageViewer selectedImage={selectedImage} />;
 
     default:
       return (
@@ -788,7 +814,7 @@ export default function VistaDesktop() {
     }
 
     console.log("Creating new window:", newWindow)
-    setOpenWindows([...openWindows, newWindow])
+    setOpenWindows((prev) => [...prev, newWindow])
     setActiveWindow(windowId)
     setNextZIndex((prev) => prev + 1)
   }
@@ -944,11 +970,22 @@ export default function VistaDesktop() {
     {
       id: "image-viewer",
       title: selectedImage?.alt || "Image Viewer",
-      content: <WindowContent windowId="image-viewer" onWallpaperChange={setSelectedWallpaper} wallpapers={wallpapers} onOpenWindow={setActiveWindow} selectedImage={selectedImage} />,
+      content: (
+        <div className="h-[800px]">
+          <WindowContent 
+            windowId="image-viewer" 
+            onWallpaperChange={setSelectedWallpaper} 
+            wallpapers={wallpapers} 
+            onOpenWindow={setActiveWindow} 
+            selectedImage={selectedImage}
+            setSelectedImage={setSelectedImage}
+          />
+        </div>
+      ),
       isMinimized: false,
       isMaximized: false,
       position: { x: 350, y: 350 },
-      size: { width: 800, height: 600 },
+      size: { width: 1200, height: 900 },
     },
   ]
 
