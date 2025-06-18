@@ -26,3 +26,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 /lib/generated/prisma
+
+# Ignore all images in the gallery for backup purposes
+/public/gallery/*.jpg
+/public/gallery/*.jpeg
+/public/gallery/*.png
+/public/gallery/*.gif
