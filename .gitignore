@@ -32,3 +32,6 @@ next-env.d.ts
 /public/gallery/*.jpeg
 /public/gallery/*.png
 /public/gallery/*.gif
+
+# Ignore sound files
+/public/sounds/

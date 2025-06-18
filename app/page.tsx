@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { User, Briefcase, Mail, Monitor, ImageIcon, Power, Users } from "lucide-react"
 import VistaTaskbar from "@/components/vista-taskbar"
@@ -763,14 +763,53 @@ export default function VistaDesktop() {
   const [selectedWallpaper, setSelectedWallpaper] = useState<string | null>(null)
   const [selectedImage, setSelectedImage] = useState<{ src: string; alt: string } | null>(null)
 
+  // Sound refs
+  const clickSoundRef = useRef<HTMLAudioElement | null>(null)
+  const shutdownSoundRef = useRef<HTMLAudioElement | null>(null)
+
+  // Konami code detection
+  const konamiCode = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"]
+  const [konamiIndex, setKonamiIndex] = useState(0)
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() === konamiCode[konamiIndex].toLowerCase()) {
+        setKonamiIndex((prev) => {
+          const newIndex = prev + 1
+          if (newIndex === konamiCode.length) {
+            // Check if the secret window is already open
+            if (!openWindows.some(window => window.id === "secret-dev-log")) {
+              openWindow("secret-dev-log")
+            }
+            return 0
+          }
+          return newIndex
+        })
+      } else {
+        setKonamiIndex(0)
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [konamiIndex, openWindows])
+
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000)
     return () => clearInterval(timer)
   }, [])
 
+  // Load sound effects
+  useEffect(() => {
+    clickSoundRef.current = new Audio("/sounds/click.mp3")
+    shutdownSoundRef.current = new Audio("/sounds/shutdown.mp3")
+  }, [])
+
   const openWindow = (windowId: string) => {
     console.log("Opening window:", windowId)
     setShowWelcome(false)
+    // Play click sound
+    clickSoundRef.current?.play().catch(e => console.error("Error playing click sound:", e))
 
     // Check if window is already open but minimized
     const existingWindow = openWindows.find((w) => w.id === windowId)
@@ -788,6 +827,11 @@ export default function VistaDesktop() {
         setOpenWindows((windows) => windows.map((w) => (w.id === windowId ? { ...w, zIndex: nextZIndex } : w)))
         setNextZIndex((prev) => prev + 1)
       }
+      return
+    }
+
+    // Prevent opening a duplicate window
+    if (openWindows.some(window => window.id === windowId)) {
       return
     }
 
@@ -882,6 +926,8 @@ export default function VistaDesktop() {
     setPowerAction(action)
     setShowPowerScreen(true)
     setShowPowerMenu(false)
+    // Play shutdown sound
+    shutdownSoundRef.current?.play().catch(e => console.error("Error playing shutdown sound:", e))
 
     // Auto-restore after 2 seconds
     setTimeout(() => {
