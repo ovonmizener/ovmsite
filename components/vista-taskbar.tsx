@@ -177,7 +177,7 @@ export default function VistaTaskbar({
       </AnimatePresence>
 
       {/* Taskbar - Now at top */}
-      <div className="fixed top-0 left-0 right-0 h-16 vista-taskbar flex items-center justify-between px-4 z-30">
+      <div className="fixed top-0 left-0 right-0 h-16 vista-taskbar flex items-center justify-between px-4 z-[5]">
         {/* Search Button */}
         <div className="flex items-center space-x-2">
           <VistaOrb className="w-10 h-10" onClick={onSearch}>

@@ -27,6 +27,7 @@ interface WindowState {
   y: number
   zIndex: number
   isMinimized: boolean
+  isFullScreen: boolean
 }
 
 const wallpapers = [
@@ -723,16 +724,16 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
 export default function VistaDesktop() {
   const [currentTime, setCurrentTime] = useState(new Date())
   const [openWindows, setOpenWindows] = useState<WindowState[]>([])
-  const [activeWindow, setActiveWindow] = useState<string | null>("welcome")
+  const [activeWindow, setActiveWindow] = useState<string | null>(null)
   const [showWelcome, setShowWelcome] = useState(true)
   const [desktopIcons, setDesktopIcons] = useState(initialIcons)
-  const [nextZIndex, setNextZIndex] = useState(100)
+  const [nextZIndex, setNextZIndex] = useState(1)
   const [showSearch, setShowSearch] = useState(false)
   const [showPowerMenu, setShowPowerMenu] = useState(false)
   const [currentWallpaper, setCurrentWallpaper] = useState(wallpapers[0])
   const [showPowerScreen, setShowPowerScreen] = useState(false)
   const [powerAction, setPowerAction] = useState("")
-  const [selectedWallpaper, setSelectedWallpaper] = useState(wallpapers[0])
+  const [selectedWallpaper, setSelectedWallpaper] = useState<string | null>(null)
   const [selectedImage, setSelectedImage] = useState<{ src: string; alt: string } | null>(null)
 
   useEffect(() => {
@@ -783,6 +784,7 @@ export default function VistaDesktop() {
       y: Math.max(80, y), // Minimum 80px from top edge (below taskbar)
       zIndex: nextZIndex,
       isMinimized: false,
+      isFullScreen: false,
     }
 
     console.log("Creating new window:", newWindow)
@@ -868,6 +870,22 @@ export default function VistaDesktop() {
 
   const changeWallpaper = (wallpaper: (typeof wallpapers)[0]) => {
     setCurrentWallpaper(wallpaper)
+  }
+
+  const toggleFullScreen = (windowId: string) => {
+    setOpenWindows((windows) =>
+      windows.map((w) => {
+        if (w.id === windowId) {
+          // If going full screen, bring to front
+          if (!w.isFullScreen) {
+            setNextZIndex((prev) => prev + 1)
+            return { ...w, isFullScreen: true, zIndex: nextZIndex }
+          }
+          return { ...w, isFullScreen: false }
+        }
+        return w
+      })
+    )
   }
 
   const desktopStyle = {
@@ -1061,12 +1079,14 @@ export default function VistaDesktop() {
                 title={desktopIcons.find((icon) => icon.id === window.id)?.name || window.id}
                 onClose={() => closeWindow(window.id)}
                 onMinimize={() => minimizeWindow(window.id)}
+                onFullScreen={() => toggleFullScreen(window.id)}
                 isActive={activeWindow === window.id}
                 onClick={() => bringWindowToFront(window.id)}
                 onMove={(x, y) => updateWindowPosition(window.id, x, y)}
                 width={800}
                 height={600}
-                isDraggable={true}
+                isDraggable={!window.isFullScreen}
+                isFullScreen={window.isFullScreen}
               >
                 <div className="p-8">
                   <WindowContent 
@@ -1088,10 +1108,7 @@ export default function VistaDesktop() {
         openWindows={openWindows.map((w) => w.id)}
         minimizedWindows={openWindows.filter((w) => w.isMinimized).map((w) => w.id)}
         activeWindow={activeWindow}
-        onWindowClick={(windowId) => {
-          console.log("Taskbar window click:", windowId)
-          bringWindowToFront(windowId)
-        }}
+        onWindowClick={bringWindowToFront}
         currentTime={currentTime}
         onSearch={handleSearch}
         onPowerMenu={handlePowerMenu}
