@@ -3,6 +3,8 @@
 import { motion } from "framer-motion"
 import { X, Minus, Square } from "lucide-react"
 import type { ReactNode } from "react"
+import { useEffect, useRef } from "react"
+import { createPortal } from "react-dom"
 
 interface VistaWindowProps {
   title: string
@@ -33,7 +35,8 @@ export default function VistaWindow({
   isDraggable = true,
   isFullScreen = false,
 }: VistaWindowProps) {
-  return (
+  // Portal logic for full screen
+  const windowContent = (
     <motion.div
       className={`vista-window ${isActive ? "vista-glow-blue" : ""} ${isFullScreen ? "fixed" : "cursor-move"}`}
       style={{ 
@@ -90,6 +93,9 @@ export default function VistaWindow({
             className="w-6 h-6 rounded-full bg-green-400/80 hover:bg-green-400 transition-colors flex items-center justify-center cursor-pointer"
             onClick={(e) => {
               e.stopPropagation()
+              if (!isFullScreen && onMove) {
+                onMove(0, 0)
+              }
               onFullScreen?.()
             }}
           >
@@ -121,4 +127,9 @@ export default function VistaWindow({
       </div>
     </motion.div>
   )
+
+  if (isFullScreen && typeof window !== "undefined") {
+    return createPortal(windowContent, document.body)
+  }
+  return windowContent
 }

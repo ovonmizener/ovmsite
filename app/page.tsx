@@ -29,6 +29,7 @@ interface WindowState {
   zIndex: number
   isMinimized: boolean
   isFullScreen: boolean
+  lastPosition?: { x: number; y: number }
 }
 
 const wallpapers = [
@@ -902,12 +903,27 @@ export default function VistaDesktop() {
     setOpenWindows((windows) =>
       windows.map((w) => {
         if (w.id === windowId) {
-          // If going full screen, bring to front
           if (!w.isFullScreen) {
+            // Going full screen: store current position
             setNextZIndex((prev) => prev + 1)
-            return { ...w, isFullScreen: true, zIndex: nextZIndex }
+            return {
+              ...w,
+              isFullScreen: true,
+              zIndex: nextZIndex,
+              lastPosition: { x: w.x, y: w.y },
+              x: 0, // Optionally reset x/y to 0 for full screen
+              y: 0,
+            }
+          } else {
+            // Exiting full screen: restore last position
+            return {
+              ...w,
+              isFullScreen: false,
+              x: w.lastPosition?.x ?? w.x,
+              y: w.lastPosition?.y ?? w.y,
+              lastPosition: undefined,
+            }
           }
-          return { ...w, isFullScreen: false }
         }
         return w
       })
@@ -1106,11 +1122,11 @@ export default function VistaDesktop() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               className="absolute"
-              style={{
-                left: window.x,
-                top: window.y,
-                zIndex: window.zIndex,
-              }}
+              style={
+                window.isFullScreen
+                  ? { zIndex: window.zIndex }
+                  : { left: window.x, top: window.y, zIndex: window.zIndex }
+              }
             >
               <VistaWindow
                 title={desktopIcons.find((icon) => icon.id === window.id)?.name || window.id}
