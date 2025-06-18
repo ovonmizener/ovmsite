@@ -120,7 +120,7 @@ export default function VistaWindow({
         style={{
           marginTop: isFullScreen ? "56px" : undefined,
           height: isFullScreen ? "calc(100% - 56px)" : "100%",
-          minHeight: "800px"
+          overflow: "auto"
         }}
       >
         {children}
