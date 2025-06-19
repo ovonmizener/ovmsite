@@ -33,6 +33,8 @@ interface DesktopWindowState {
   isMinimized: boolean
   isFullScreen: boolean
   lastPosition?: { x: number; y: number }
+  width: number
+  height: number
 }
 
 const wallpapers = [
@@ -1019,6 +1021,7 @@ export default function VistaDesktop() {
   const [welcomeFullScreen, setWelcomeFullScreen] = useState(false)
   const [welcomePosition, setWelcomePosition] = useState({ x: 0, y: 0 })
   const [welcomeLastPosition, setWelcomeLastPosition] = useState<{ x: number; y: number } | null>(null)
+  const [welcomeSize, setWelcomeSize] = useState({ width: 700, height: 500 })
 
   // Sound refs
   const clickSoundRef = useRef<HTMLAudioElement | null>(null)
@@ -1144,6 +1147,8 @@ export default function VistaDesktop() {
       zIndex: nextZIndex,
       isMinimized: false,
       isFullScreen: false,
+      width: windowWidth,
+      height: windowHeight,
     }
 
     console.log("Creating new window:", newWindow)
@@ -1170,6 +1175,10 @@ export default function VistaDesktop() {
 
   const updateWindowPosition = (windowId: string, x: number, y: number) => {
     setOpenWindows((windows: DesktopWindowState[]) => windows.map((w) => (w.id === windowId ? { ...w, x, y } : w)))
+  }
+
+  const updateWindowSize = (windowId: string, width: number, height: number) => {
+    setOpenWindows((windows: DesktopWindowState[]) => windows.map((w) => (w.id === windowId ? { ...w, width, height } : w)))
   }
 
   const bringWindowToFront = (windowId: string) => {
@@ -1373,9 +1382,11 @@ export default function VistaDesktop() {
   }
 
   const handleWelcomeMove = (x: number, y: number) => {
-    if (!welcomeFullScreen) {
-      setWelcomePosition({ x, y })
-    }
+    setWelcomePosition({ x, y })
+  }
+
+  const handleWelcomeResize = (width: number, height: number) => {
+    setWelcomeSize({ width, height })
   }
 
   return (
@@ -1460,11 +1471,14 @@ export default function VistaDesktop() {
               onMinimize={handleWelcomeMinimize}
               onFullScreen={handleWelcomeFullScreen}
               isActive={true}
-              width={welcomeFullScreen ? windowSize.width : 700}
-              height={welcomeFullScreen ? windowSize.height : 500}
+              width={welcomeFullScreen ? windowSize.width : welcomeSize.width}
+              height={welcomeFullScreen ? windowSize.height : welcomeSize.height}
               isDraggable={!welcomeFullScreen}
               isFullScreen={welcomeFullScreen}
               onMove={handleWelcomeMove}
+              onResize={handleWelcomeResize}
+              initialX={welcomePosition.x}
+              initialY={welcomePosition.y}
             >
               <div className="p-8 text-center">
                 <motion.div
@@ -1552,10 +1566,13 @@ export default function VistaDesktop() {
                 isActive={activeWindow === win.id}
                 onClick={() => bringWindowToFront(win.id)}
                 onMove={(x, y) => updateWindowPosition(win.id, x, y)}
-                width={win.id === "flappy-bird-game" ? 900 : win.id === "welcome" ? 700 : 800}
-                height={win.id === "flappy-bird-game" ? 800 : win.id === "welcome" ? 500 : 600}
+                onResize={(width: number, height: number) => updateWindowSize(win.id, width, height)}
+                width={win.isFullScreen ? windowSize.width : win.width}
+                height={win.isFullScreen ? windowSize.height : win.height}
                 isDraggable={!win.isFullScreen}
                 isFullScreen={win.isFullScreen}
+                initialX={win.x}
+                initialY={win.y}
               >
                 <div className={win.id === "flappy-bird-game" ? "h-full" : "p-8"}>
                   <WindowContent 
