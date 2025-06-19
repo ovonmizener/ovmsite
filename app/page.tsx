@@ -131,6 +131,79 @@ const ImageViewer = React.memo(({ selectedImage }: { selectedImage: { src: strin
 
 ImageViewer.displayName = 'ImageViewer';
 
+// Social Card Component
+const SocialCard = ({ social, index }: { social: any; index: number }) => (
+  <motion.a
+    href={social.url}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="block group"
+    whileHover={{ 
+      y: -8,
+      scale: 1.02,
+      transition: { type: "spring", stiffness: 300 }
+    }}
+  >
+    <div className="aero-glass rounded-xl p-6 backdrop-blur-sm border border-white/10 relative overflow-hidden h-full">
+      {/* Animated background gradient */}
+      <div className={`absolute inset-0 bg-gradient-to-br ${social.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
+      
+      {/* Floating particles effect */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute w-2 h-2 bg-white/20 rounded-full"
+          animate={{
+            x: [0, 20, 0],
+            y: [0, -20, 0],
+            opacity: [0, 1, 0]
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            delay: index * 0.5
+          }}
+          style={{
+            left: `${20 + index * 10}%`,
+            top: `${30 + index * 15}%`
+          }}
+        />
+      </div>
+      
+      <div className="relative z-10">
+        <div className="flex items-center justify-between mb-4">
+          <div
+            className={`w-14 h-14 rounded-xl bg-gradient-to-r ${social.color} ${social.hoverColor} flex items-center justify-center text-white transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-lg`}
+          >
+            {social.icon}
+          </div>
+          <motion.div
+            animate={{ rotate: [0, 5, -5, 0] }}
+            transition={{ duration: 2, repeat: Infinity, delay: index * 0.3 }}
+            className="text-2xl opacity-50 group-hover:opacity-100 transition-opacity"
+          >
+            →
+          </motion.div>
+        </div>
+        
+        <h3 className="font-bold text-xl mb-2 group-hover:text-blue-300 transition-colors">
+          {social.name}
+        </h3>
+        
+        <div className="flex items-center text-blue-300 text-sm group-hover:text-blue-200 transition-colors">
+          <span>Visit Profile</span>
+          <motion.span
+            className="ml-2"
+            animate={{ x: [0, 5, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, delay: index * 0.2 }}
+          >
+            →
+          </motion.span>
+        </div>
+      </div>
+    </div>
+  </motion.a>
+);
+
 function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, selectedImage, setSelectedImage, isFirstVisit }: WindowContentProps) {
   const handleImageClick = (index: number) => {
     if (setSelectedImage) {
@@ -214,70 +287,123 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
   switch (windowId) {
     case "social":
       return (
-        <div className="text-white">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6">Connect With Me</h2>
+        <div className="text-white relative overflow-hidden">
+          {/* Background animated elements */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-10 left-10 w-32 h-32 bg-blue-500/10 rounded-full blur-xl animate-pulse"></div>
+            <div className="absolute top-32 right-20 w-24 h-24 bg-purple-500/10 rounded-full blur-xl animate-pulse delay-1000"></div>
+            <div className="absolute bottom-20 left-1/4 w-40 h-40 bg-pink-500/10 rounded-full blur-xl animate-pulse delay-2000"></div>
+          </div>
+
+          <h2 className="text-3xl font-bold vista-text-gradient mb-6 relative z-10">Connect With Me</h2>
+          
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="mb-8"
+            className="mb-8 relative z-10"
           >
-            <div className="aero-glass rounded-lg p-6">
+            <div className="aero-glass rounded-lg p-6 backdrop-blur-sm border border-white/10">
               <p className="text-white/80 text-lg">
                 Connect with me on social media at the links below. These are all my official profiles, I dabble in all media forms and enjoy connecting with others online.
               </p>
             </div>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {socialLinks.map((social, index) => (
-              <motion.a
-                key={social.name}
-                href={social.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className={`aero-glass rounded-lg p-6 vista-shine hover:scale-105 transition-all duration-300 cursor-pointer group block`}
-                whileHover={{ y: -5 }}
+          {/* Dynamic grid layout */}
+          <div className="relative z-10">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+              {/* First row - 3 items */}
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 }}
               >
-                <div className="flex items-start space-x-4">
-                  <div
-                    className={`w-12 h-12 rounded-full bg-gradient-to-r ${social.color} ${social.hoverColor} flex items-center justify-center text-white transition-all duration-300 group-hover:scale-110`}
-                  >
-                    {social.icon}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-lg mb-2 group-hover:text-blue-300 transition-colors">
-                      {social.name}
-                    </h3>
-                    <div className="mt-3 flex items-center text-blue-300 text-sm group-hover:text-blue-200 transition-colors">
-                      <span>Visit Profile</span>
-                      <motion.span
-                        className="ml-2"
-                        animate={{ x: [0, 5, 0] }}
-                        transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
-                      >
-                        →
-                      </motion.span>
-                    </div>
-                  </div>
-                </div>
-              </motion.a>
-            ))}
+                <SocialCard social={socialLinks[0]} index={0} />
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, y: -50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                <SocialCard social={socialLinks[1]} index={1} />
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                <SocialCard social={socialLinks[2]} index={2} />
+              </motion.div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Second row - 3 items */}
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.6 }}
+              >
+                <SocialCard social={socialLinks[3]} index={3} />
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+              >
+                <SocialCard social={socialLinks[4]} index={4} />
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.8 }}
+              >
+                <SocialCard social={socialLinks[5]} index={5} />
+              </motion.div>
+            </div>
           </div>
 
-          {/* Stats Section */}
+          {/* Floating stats section */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-            className="mt-12 aero-glass rounded-lg p-6"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 1, type: "spring", stiffness: 100 }}
+            className="mt-12 relative z-10"
           >
-            <h3 className="text-xl font-bold mb-4 text-center">Social Media Stats</h3>
-            <div className="text-center text-white/60">
-              Stats coming soon...
+            <div className="aero-glass rounded-2xl p-8 backdrop-blur-sm border border-white/10 relative overflow-hidden">
+              {/* Animated background pattern */}
+              <div className="absolute inset-0 opacity-5">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 animate-pulse"></div>
+              </div>
+              
+              <div className="relative z-10">
+                <h3 className="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">
+                  Social Media Stats
+                </h3>
+                <div className="text-center text-white/60">
+                  <div className="flex justify-center items-center space-x-8">
+                    <motion.div
+                      animate={{ rotate: [0, 10, -10, 0] }}
+                      transition={{ duration: 4, repeat: Infinity }}
+                      className="text-4xl"
+                    >
+                      📊
+                    </motion.div>
+                    <span className="text-lg">Stats coming soon...</span>
+                    <motion.div
+                      animate={{ rotate: [0, -10, 10, 0] }}
+                      transition={{ duration: 4, repeat: Infinity, delay: 2 }}
+                      className="text-4xl"
+                    >
+                      📈
+                    </motion.div>
+                  </div>
+                </div>
+              </div>
             </div>
           </motion.div>
         </div>
