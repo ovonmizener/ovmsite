@@ -101,6 +101,8 @@ interface WindowContentProps {
   selectedImage?: { src: string; alt: string } | null;
   setSelectedImage?: (image: { src: string; alt: string } | null) => void;
   isFirstVisit?: boolean;
+  browserWindow?: { url: string; title: string } | null;
+  setBrowserWindow?: (browser: { url: string; title: string } | null) => void;
 }
 
 const ImageViewer = React.memo(({ selectedImage }: { selectedImage: { src: string; alt: string } | null | undefined }) => {
@@ -131,19 +133,147 @@ const ImageViewer = React.memo(({ selectedImage }: { selectedImage: { src: strin
 
 ImageViewer.displayName = 'ImageViewer';
 
+// Browser Window Component
+const BrowserWindow = ({ url, title, onClose }: { url: string; title: string; onClose: () => void }) => {
+  const [currentUrl, setCurrentUrl] = useState(url);
+  const [isLoading, setIsLoading] = useState(true);
+  const [canLoadIframe, setCanLoadIframe] = useState(true);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  const handleIframeLoad = () => {
+    setIsLoading(false);
+  };
+
+  const handleIframeError = () => {
+    setCanLoadIframe(false);
+    setIsLoading(false);
+  };
+
+  const openInNewTab = () => {
+    window.open(url, '_blank');
+  };
+
+  const handleRefresh = () => {
+    setIsLoading(true);
+    if (iframeRef.current) {
+      iframeRef.current.src = iframeRef.current.src;
+    }
+  };
+
+  return (
+    <div className="w-full h-full flex flex-col bg-white/10 rounded-lg shadow-xl overflow-hidden aero-glass">
+      {/* Browser Title Bar */}
+      <div className="flex items-center justify-between px-4 py-2 bg-white/20 border-b border-white/10">
+        <div className="flex items-center space-x-2">
+          <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+          <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+        </div>
+        <div className="flex-1 text-center">
+          <span className="text-sm font-medium text-white/90">{title}</span>
+        </div>
+        <button
+          onClick={onClose}
+          className="w-6 h-6 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 rounded transition-colors"
+        >
+          ×
+        </button>
+      </div>
+
+      {/* Browser Toolbar */}
+      <div className="flex items-center space-x-2 px-4 py-2 bg-white/10 border-b border-white/10">
+        <button
+          onClick={() => iframeRef.current?.contentWindow?.history.back()}
+          className="p-1 text-white/70 hover:text-white hover:bg-white/10 rounded transition-colors"
+          title="Back"
+        >
+          ←
+        </button>
+        <button
+          onClick={() => iframeRef.current?.contentWindow?.history.forward()}
+          className="p-1 text-white/70 hover:text-white hover:bg-white/10 rounded transition-colors"
+          title="Forward"
+        >
+          →
+        </button>
+        <button
+          onClick={handleRefresh}
+          className="p-1 text-white/70 hover:text-white hover:bg-white/10 rounded transition-colors"
+          title="Refresh"
+        >
+          ⟳
+        </button>
+        <div className="flex-1 mx-2">
+          <input
+            type="text"
+            value={currentUrl}
+            onChange={(e) => setCurrentUrl(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') {
+                if (iframeRef.current) {
+                  iframeRef.current.src = currentUrl;
+                  setIsLoading(true);
+                }
+              }
+            }}
+            className="w-full px-3 py-1 text-sm bg-white/20 text-white/90 rounded border border-white/20 focus:border-blue-400 focus:outline-none"
+            placeholder="Enter URL..."
+          />
+        </div>
+        <button
+          onClick={openInNewTab}
+          className="px-3 py-1 text-sm bg-blue-500/20 hover:bg-blue-500/40 text-blue-300 rounded transition-colors border border-blue-400/30"
+          title="Open in New Tab"
+        >
+          New Tab
+        </button>
+      </div>
+
+      {/* Browser Content */}
+      <div className="flex-1 relative bg-white">
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-white/50 z-10">
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-sm text-gray-600">Loading...</span>
+            </div>
+          </div>
+        )}
+        
+        {canLoadIframe ? (
+          <iframe
+            ref={iframeRef}
+            src={url}
+            className="w-full h-full border-0"
+            onLoad={handleIframeLoad}
+            onError={handleIframeError}
+            sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"
+          />
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gray-50">
+            <div className="text-center p-8">
+              <div className="text-6xl mb-4">🌐</div>
+              <h3 className="text-xl font-semibold text-gray-700 mb-2">Content Blocked</h3>
+              <p className="text-gray-500 mb-4">
+                This website cannot be displayed in the inline browser due to security restrictions.
+              </p>
+              <button
+                onClick={openInNewTab}
+                className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+              >
+                Open in New Tab
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 // Social Card Component
 const SocialCard = ({ social, index }: { social: any; index: number }) => (
-  <motion.a
-    href={social.url}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="block group"
-    whileHover={{ 
-      y: -8,
-      scale: 1.02,
-      transition: { type: "spring", stiffness: 300 }
-    }}
-  >
+  <div className="block group">
     <div className="aero-glass rounded-xl p-6 backdrop-blur-sm border border-white/10 relative overflow-hidden h-full">
       {/* Animated background gradient */}
       <div className={`absolute inset-0 bg-gradient-to-br ${social.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
@@ -189,22 +319,22 @@ const SocialCard = ({ social, index }: { social: any; index: number }) => (
           {social.name}
         </h3>
         
-        <div className="flex items-center text-blue-300 text-sm group-hover:text-blue-200 transition-colors">
-          <span>Visit Profile</span>
-          <motion.span
-            className="ml-2"
-            animate={{ x: [0, 5, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, delay: index * 0.2 }}
+        <div className="mt-4">
+          <a
+            href={social.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all duration-200 border border-blue-400/50 text-sm font-medium text-center shadow-lg hover:shadow-xl hover:scale-105"
           >
-            →
-          </motion.span>
+            Open in New Tab
+          </a>
         </div>
       </div>
     </div>
-  </motion.a>
+  </div>
 );
 
-function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, selectedImage, setSelectedImage, isFirstVisit }: WindowContentProps) {
+function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, selectedImage, setSelectedImage, isFirstVisit, browserWindow, setBrowserWindow }: WindowContentProps) {
   const handleImageClick = (index: number) => {
     if (setSelectedImage) {
       setSelectedImage({
@@ -212,6 +342,19 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
         alt: `Gallery photo ${index + 1}`
       });
       onOpenWindow("image-viewer");
+    }
+  };
+
+  const openInBrowser = (url: string, title: string) => {
+    if (setBrowserWindow) {
+      setBrowserWindow({ url, title });
+      onOpenWindow("browser");
+    }
+  };
+
+  const closeBrowser = () => {
+    if (setBrowserWindow) {
+      setBrowserWindow(null);
     }
   };
 
@@ -285,6 +428,17 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
   ]
 
   switch (windowId) {
+    case "browser":
+      return browserWindow ? (
+        <BrowserWindow 
+          url={browserWindow.url} 
+          title={browserWindow.title} 
+          onClose={closeBrowser} 
+        />
+      ) : (
+        <div className="text-white">No browser window to display</div>
+      );
+
     case "social":
       return (
         <div className="text-white relative overflow-hidden">
@@ -1279,6 +1433,9 @@ export default function VistaDesktop() {
   // Add state for window size at the top of VistaDesktop
   const [windowSize, setWindowSize] = useState({ width: 1200, height: 900 });
   
+  // Browser window state
+  const [browserWindow, setBrowserWindow] = useState<{ url: string; title: string } | null>(null)
+  
   // Welcome window state
   const [welcomeMinimized, setWelcomeMinimized] = useState(false)
   const [welcomeFullScreen, setWelcomeFullScreen] = useState(false)
@@ -1603,6 +1760,8 @@ export default function VistaDesktop() {
             selectedImage={selectedImage}
             setSelectedImage={setSelectedImage}
             isFirstVisit={isFirstVisit}
+            browserWindow={browserWindow}
+            setBrowserWindow={setBrowserWindow}
           />
         </div>
       ),
@@ -1838,7 +1997,7 @@ export default function VistaDesktop() {
                 initialX={win.x}
                 initialY={win.y}
               >
-                <div className={win.id === "flappy-bird-game" || win.id === "terminal" ? "h-full" : "p-8"}>
+                <div className={win.id === "flappy-bird-game" || win.id === "terminal" || win.id === "browser" ? "h-full" : "p-8"}>
                   <WindowContent 
                     windowId={win.id} 
                     onWallpaperChange={changeWallpaper} 
@@ -1847,6 +2006,8 @@ export default function VistaDesktop() {
                     selectedImage={selectedImage}
                     setSelectedImage={setSelectedImage}
                     isFirstVisit={isFirstVisit}
+                    browserWindow={browserWindow}
+                    setBrowserWindow={setBrowserWindow}
                   />
                 </div>
               </VistaWindow>
