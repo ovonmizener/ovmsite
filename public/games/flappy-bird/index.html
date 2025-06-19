@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jetpack Escape</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: #1a1a1a;
+        }
+        #gameContainer {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #1a1a1a;
+        }
+        #game-canvas {
+            width: 100% !important;
+            height: 100% !important;
+            aspect-ratio: 1 / 1;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+            border: 3px solid #00FFFF;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="game-canvas"></canvas>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html> 

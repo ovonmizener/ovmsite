@@ -172,7 +172,9 @@ export default function ProjectsPage() {
                     </div>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle className="text-xl">{project.title}</CardTitle>
+                        <CardTitle className="text-xl">
+                          {project.title}
+                        </CardTitle>
                         <div className="flex items-center text-sm text-gray-500">
                           <Calendar className="w-4 h-4 mr-1" />
                           {project.date}
@@ -239,7 +241,9 @@ export default function ProjectsPage() {
                   </div>
                   <CardHeader className="pb-2">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-lg">{project.title}</CardTitle>
+                      <CardTitle className="text-lg">
+                        {project.title}
+                      </CardTitle>
                       <span className="text-sm text-gray-500">{project.date}</span>
                     </div>
                   </CardHeader>

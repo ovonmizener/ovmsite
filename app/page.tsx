@@ -22,7 +22,7 @@ const GRID_SIZE = 100 // Size of each grid cell
 const GRID_OFFSET_X = 30 // Horizontal offset from screen edge
 const GRID_OFFSET_Y = 100 // Vertical offset from top (below taskbar)
 
-interface WindowState {
+interface DesktopWindowState {
   id: string
   x: number
   y: number
@@ -466,8 +466,8 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
               { 
                 id: "flappy-bird",
                 name: "Python Game", 
-                tech: "Flappy Bird Clone", 
-                desc: "Classic game recreated with Python"
+                tech: "Jetpack Escape", 
+                desc: "A Python implementation of Jetpack Escape, now playable in your browser!"
               },
               { 
                 id: "joypop",
@@ -550,9 +550,9 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
     case "flappy-bird":
       return (
         <div className="text-white">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6">Python Game - Flappy Bird Clone</h2>
+          <h2 className="text-3xl font-bold vista-text-gradient mb-6">Python Game - Jetpack Escape</h2>
           <div className="aero-glass rounded-lg p-6">
-            <p className="text-white/80 mb-4">A Python implementation of the classic Flappy Bird game.</p>
+            <p className="text-white/80 mb-4">Just for fun, I started making a "Flappy Bird" style game in Python. It's themed after popular streamer Raora, and her character Chattino. I'm just doing this for the experience, I may never finish it, but I wanted a repository available so I can share with friends. Feel free to take/use/modify this however you want. For source code and more details, please visit the GitHub repository.</p>
             <div className="space-y-4">
               <a 
                 href="https://github.com/ovonmizener/chattinogame" 
@@ -565,11 +565,38 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
                 </svg>
                 View on GitHub
               </a>
+              <button 
+                onClick={() => onOpenWindow("flappy-bird-game")}
+                className="inline-flex items-center px-4 py-2 rounded-lg bg-green-500/20 hover:bg-green-500/30 transition-colors border border-green-500/30"
+              >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                🎮 Play Game
+              </button>
               <div className="mt-4 p-4 bg-white/5 rounded-lg">
-                <p className="text-white/60 text-sm">Game preview coming soon...</p>
+                <p className="text-white/80 text-sm mb-2">🎯 How to Play:</p>
+                <ul className="text-white/60 text-sm space-y-1">
+                  <li>• SPACE: Jump / Double Jump</li>
+                  <li>• ESC: Return to Menu</li>
+                  <li>• Mouse: Navigate Menus</li>
+                  <li>• Choose between Traditional and Continuous modes</li>
+                </ul>
               </div>
             </div>
           </div>
+        </div>
+      )
+
+    case "flappy-bird-game":
+      return (
+        <div style={{ width: "100%", height: "100%" }}>
+          <iframe
+            src="/games/flappy-bird/index.html"
+            className="w-full h-full border-0"
+            title="Jetpack Escape Game"
+            sandbox="allow-scripts allow-same-origin"
+          />
         </div>
       )
 
@@ -750,7 +777,7 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
 
 export default function VistaDesktop() {
   const [currentTime, setCurrentTime] = useState(new Date())
-  const [openWindows, setOpenWindows] = useState<WindowState[]>([])
+  const [openWindows, setOpenWindows] = useState<DesktopWindowState[]>([])
   const [activeWindow, setActiveWindow] = useState<string | null>(null)
   const [showWelcome, setShowWelcome] = useState(true)
   const [desktopIcons, setDesktopIcons] = useState(initialIcons)
@@ -812,7 +839,7 @@ export default function VistaDesktop() {
     clickSoundRef.current?.play().catch(e => console.error("Error playing click sound:", e))
 
     // Check if window is already open but minimized
-    const existingWindow = openWindows.find((w) => w.id === windowId)
+    const existingWindow = openWindows.find((w: DesktopWindowState) => w.id === windowId)
     if (existingWindow) {
       if (existingWindow.isMinimized) {
         // Restore from minimized state
@@ -831,25 +858,33 @@ export default function VistaDesktop() {
     }
 
     // Prevent opening a duplicate window
-    if (openWindows.some(window => window.id === windowId)) {
+    if (openWindows.some((window: DesktopWindowState) => window.id === windowId)) {
       return
     }
 
     // Calculate position to ensure window stays within screen bounds
-    const windowWidth = 800
-    const windowHeight = 600
     const screenWidth = window.innerWidth
     const screenHeight = window.innerHeight - 80 // Account for taskbar at top
+
+    // For the game window, use a large square size
+    const isGameWindow = windowId === "flappy-bird-game"
+    const maxSquare = Math.min(window.innerWidth, window.innerHeight - 80, 1000)
+    const initialWindowWidth = isGameWindow ? maxSquare : 800
+    const initialWindowHeight = isGameWindow ? maxSquare : 600
+
+    // Ensure square window for the game
+    const windowWidth = isGameWindow ? maxSquare : initialWindowWidth
+    const windowHeight = isGameWindow ? maxSquare : initialWindowHeight
 
     const baseX = 100 + openWindows.length * 50
     const baseY = 100 + openWindows.length * 50 + 80 // Add offset for top taskbar
 
     // Ensure window doesn't go off screen
     const x = Math.min(baseX, screenWidth - windowWidth - 50)
-    const y = Math.min(baseY, screenHeight - windowHeight - 50)
+    const y = Math.min(baseY, screenHeight - 80 - windowHeight - 50)
 
     // Create new window
-    const newWindow: WindowState = {
+    const newWindow: DesktopWindowState = {
       id: windowId,
       x: Math.max(50, x), // Minimum 50px from left edge
       y: Math.max(80, y), // Minimum 80px from top edge (below taskbar)
@@ -865,35 +900,35 @@ export default function VistaDesktop() {
   }
 
   const closeWindow = (windowId: string) => {
-    setOpenWindows(openWindows.filter((w) => w.id !== windowId))
+    setOpenWindows(openWindows.filter((w: DesktopWindowState) => w.id !== windowId))
     if (activeWindow === windowId) {
-      const remainingWindows = openWindows.filter((w) => w.id !== windowId && !w.isMinimized)
+      const remainingWindows = openWindows.filter((w: DesktopWindowState) => w.id !== windowId && !w.isMinimized)
       setActiveWindow(remainingWindows.length > 0 ? remainingWindows[remainingWindows.length - 1].id : null)
     }
   }
 
   const minimizeWindow = (windowId: string) => {
-    setOpenWindows((windows) => windows.map((w) => (w.id === windowId ? { ...w, isMinimized: true } : w)))
+    setOpenWindows((windows: DesktopWindowState[]) => windows.map((w) => (w.id === windowId ? { ...w, isMinimized: true } : w)))
     if (activeWindow === windowId) {
-      const remainingWindows = openWindows.filter((w) => w.id !== windowId && !w.isMinimized)
+      const remainingWindows = openWindows.filter((w: DesktopWindowState) => w.id !== windowId && !w.isMinimized)
       setActiveWindow(remainingWindows.length > 0 ? remainingWindows[remainingWindows.length - 1].id : null)
     }
   }
 
   const updateWindowPosition = (windowId: string, x: number, y: number) => {
-    setOpenWindows((windows) => windows.map((w) => (w.id === windowId ? { ...w, x, y } : w)))
+    setOpenWindows((windows: DesktopWindowState[]) => windows.map((w) => (w.id === windowId ? { ...w, x, y } : w)))
   }
 
   const bringWindowToFront = (windowId: string) => {
-    const window = openWindows.find((w) => w.id === windowId)
-    if (window?.isMinimized) {
+    const win = openWindows.find((w: DesktopWindowState) => w.id === windowId)
+    if (win?.isMinimized) {
       // Restore from minimized state
-      setOpenWindows((windows) =>
+      setOpenWindows((windows: DesktopWindowState[]) =>
         windows.map((w) => (w.id === windowId ? { ...w, isMinimized: false, zIndex: nextZIndex } : w)),
       )
     } else {
       // Bring to front
-      setOpenWindows((windows) => windows.map((w) => (w.id === windowId ? { ...w, zIndex: nextZIndex } : w)))
+      setOpenWindows((windows: DesktopWindowState[]) => windows.map((w) => (w.id === windowId ? { ...w, zIndex: nextZIndex } : w)))
     }
     setActiveWindow(windowId)
     setNextZIndex((prev) => prev + 1)
@@ -1030,15 +1065,15 @@ export default function VistaDesktop() {
       size: { width: 600, height: 400 },
     },
     {
-      id: "image-viewer",
-      title: selectedImage?.alt || "Image Viewer",
+      id: "flappy-bird-game",
+      title: "🎮 Jetpack Escape",
       content: (
-        <div className="h-[800px]">
+        <div className={window.id === "flappy-bird-game" ? "h-full" : "p-8"}>
           <WindowContent 
-            windowId="image-viewer" 
-            onWallpaperChange={setSelectedWallpaper} 
-            wallpapers={wallpapers} 
-            onOpenWindow={setActiveWindow} 
+            windowId={window.id} 
+            onWallpaperChange={changeWallpaper} 
+            wallpapers={wallpapers}
+            onOpenWindow={openWindow}
             selectedImage={selectedImage}
             setSelectedImage={setSelectedImage}
           />
@@ -1047,7 +1082,7 @@ export default function VistaDesktop() {
       isMinimized: false,
       isMaximized: false,
       position: { x: 350, y: 350 },
-      size: { width: 1200, height: 900 },
+      size: { width: Math.min(1200, window.innerWidth - 100), height: Math.min(900, window.innerHeight - 180) },
     },
   ]
 
@@ -1160,36 +1195,36 @@ export default function VistaDesktop() {
       {/* Open Windows */}
       <AnimatePresence>
         {openWindows
-          .filter((window) => !window.isMinimized)
-          .map((window) => (
+          .filter((win: DesktopWindowState) => !win.isMinimized)
+          .map((win: DesktopWindowState) => (
             <motion.div
-              key={window.id}
+              key={win.id}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               className="absolute"
               style={
-                window.isFullScreen
-                  ? { zIndex: window.zIndex }
-                  : { left: window.x, top: window.y, zIndex: window.zIndex }
+                win.isFullScreen
+                  ? { zIndex: win.zIndex }
+                  : { left: win.x, top: win.y, zIndex: win.zIndex }
               }
             >
               <VistaWindow
-                title={desktopIcons.find((icon) => icon.id === window.id)?.name || window.id}
-                onClose={() => closeWindow(window.id)}
-                onMinimize={() => minimizeWindow(window.id)}
-                onFullScreen={() => toggleFullScreen(window.id)}
-                isActive={activeWindow === window.id}
-                onClick={() => bringWindowToFront(window.id)}
-                onMove={(x, y) => updateWindowPosition(window.id, x, y)}
-                width={800}
-                height={600}
-                isDraggable={!window.isFullScreen}
-                isFullScreen={window.isFullScreen}
+                title={desktopIcons.find((icon) => icon.id === win.id)?.name || win.id}
+                onClose={() => closeWindow(win.id)}
+                onMinimize={() => minimizeWindow(win.id)}
+                onFullScreen={() => toggleFullScreen(win.id)}
+                isActive={activeWindow === win.id}
+                onClick={() => bringWindowToFront(win.id)}
+                onMove={(x, y) => updateWindowPosition(win.id, x, y)}
+                width={win.id === "flappy-bird-game" ? 900 : 800}
+                height={win.id === "flappy-bird-game" ? 800 : 600}
+                isDraggable={!win.isFullScreen}
+                isFullScreen={win.isFullScreen}
               >
-                <div className="p-8">
+                <div className={win.id === "flappy-bird-game" ? "h-full" : "p-8"}>
                   <WindowContent 
-                    windowId={window.id} 
+                    windowId={win.id} 
                     onWallpaperChange={changeWallpaper} 
                     wallpapers={wallpapers}
                     onOpenWindow={openWindow}
