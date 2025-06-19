@@ -75,6 +75,13 @@ const wallpapers = [
     backgroundSize: "400% 400%",
     backgroundPosition: "0% 50%",
   },
+  {
+    id: "night-mode",
+    name: "Night Mode",
+    backgroundImage: "linear-gradient(135deg, #111 0%, #222 100%)",
+    backgroundSize: "400% 400%",
+    backgroundPosition: "0% 50%",
+  },
 ]
 
 interface WindowContentProps {
