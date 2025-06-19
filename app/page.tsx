@@ -13,6 +13,7 @@ import React from "react"
 import Cookies from "js-cookie"
 import TerminalWindow from "./components/TerminalWindow"
 import { getSkillsList } from "@/lib/data"
+import BootAnimation from "./components/BootAnimation"
 
 const initialIcons = [
   { id: "about", name: "About Me", icon: User, gridX: 0, gridY: 0 },
@@ -1442,6 +1443,7 @@ export default function VistaDesktop() {
   const [welcomePosition, setWelcomePosition] = useState({ x: 0, y: 0 })
   const [welcomeLastPosition, setWelcomeLastPosition] = useState<{ x: number; y: number } | null>(null)
   const [welcomeSize, setWelcomeSize] = useState({ width: 700, height: 500 })
+  const [showBootAnimation, setShowBootAnimation] = useState(true);
 
   // Sound refs
   const clickSoundRef = useRef<HTMLAudioElement | null>(null)
@@ -1450,6 +1452,19 @@ export default function VistaDesktop() {
   // Konami code detection
   const konamiCode = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"]
   const [konamiIndex, setKonamiIndex] = useState(0)
+
+  // Boot animation timer
+  useEffect(() => {
+    // For testing, this runs on every load.
+    // To enable "first visit only", you can do:
+    // if (!isFirstVisit) setShowBootAnimation(false);
+    
+    const timer = setTimeout(() => {
+      setShowBootAnimation(false);
+    }, 4000); // Hide after 4 seconds
+
+    return () => clearTimeout(timer);
+  }, []); // Empty dependency array ensures this runs only once on mount
 
   // Check for existing visit cookie on component mount
   useEffect(() => {
@@ -1814,6 +1829,19 @@ export default function VistaDesktop() {
 
   return (
     <div className="h-screen w-screen overflow-hidden relative" style={desktopStyle}>
+      {/* Boot Animation Overlay - modal style, blocks all interaction */}
+      <AnimatePresence>
+        {showBootAnimation && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9999] bg-black flex items-center justify-center"
+          >
+            <BootAnimation />
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* Floating Orbs Background */}
       <div className="absolute inset-0 pointer-events-none">
         {[...Array(6)].map((_, i) => (

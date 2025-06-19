@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
+// import nodemailer from 'nodemailer';
 
 // Create a transporter using environment variables
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_APP_PASSWORD,
-  },
-});
+// const transporter = nodemailer.createTransporter({
+//   service: 'gmail',
+//   auth: {
+//     user: process.env.EMAIL_USER,
+//     pass: process.env.EMAIL_APP_PASSWORD,
+//   },
+// });
 
 export async function POST(req: Request) {
   try {
@@ -46,7 +46,7 @@ ${message}
     };
 
     // Send email
-    await transporter.sendMail(mailOptions);
+    // await transporter.sendMail(mailOptions);
 
     return NextResponse.json(
       { message: 'Message sent successfully!' },
