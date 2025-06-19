@@ -16,6 +16,7 @@ interface VistaTaskbarProps {
   showSearch: boolean
   showPowerMenu: boolean
   onPowerAction: (action: string) => void
+  onOpenWallpapers?: () => void
 }
 
 export default function VistaTaskbar({
@@ -29,8 +30,11 @@ export default function VistaTaskbar({
   showSearch,
   showPowerMenu,
   onPowerAction,
+  onOpenWallpapers,
 }: VistaTaskbarProps) {
   const [searchQuery, setSearchQuery] = useState("")
+  const [showExperienceMenu, setShowExperienceMenu] = useState(false)
+  const handleOpenWallpapers = onOpenWallpapers || (() => {})
 
   const searchableContent = [
     { title: "About Me", content: "full-stack developer passionate creative", type: "page", id: "about" },
@@ -71,12 +75,13 @@ export default function VistaTaskbar({
   return (
     <div className="relative">
       {/* Overlay to close menus */}
-      {(showSearch || showPowerMenu) && (
+      {(showSearch || showPowerMenu || showExperienceMenu) && (
         <div
           className="fixed inset-0 z-40"
           onClick={() => {
             if (showSearch) onSearch()
             if (showPowerMenu) onPowerMenu()
+            if (showExperienceMenu) setShowExperienceMenu(false)
           }}
         />
       )}
@@ -176,10 +181,40 @@ export default function VistaTaskbar({
         )}
       </AnimatePresence>
 
+      {/* Experience Menu */}
+      <AnimatePresence>
+        {showExperienceMenu && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            className="absolute top-full left-0 mt-2 z-50 w-56 vista-window"
+          >
+            <div className="p-4">
+              <div className="flex items-center mb-4">
+                <span className="text-white font-semibold">Experience Options</span>
+              </div>
+              <button
+                className="w-full text-left p-3 rounded-lg hover:bg-white/10 transition-colors text-white"
+                onClick={() => {
+                  setShowExperienceMenu(false)
+                  handleOpenWallpapers()
+                }}
+              >
+                Wallpapers
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Taskbar - Now at top */}
       <div className="fixed top-0 left-0 right-0 h-16 vista-taskbar flex items-center justify-between px-4 z-[5]">
-        {/* Search Button */}
+        {/* Experience Button and Search Button */}
         <div className="flex items-center space-x-2">
+          <VistaOrb className="w-10 h-10" onClick={() => setShowExperienceMenu((v) => !v)}>
+            <span className="w-4 h-4 rounded-full bg-gradient-to-br from-green-400 to-blue-500 block" />
+          </VistaOrb>
           <VistaOrb className="w-10 h-10" onClick={onSearch}>
             <Search className="w-4 h-4" />
           </VistaOrb>

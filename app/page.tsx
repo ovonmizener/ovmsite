@@ -779,11 +779,73 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
     case "gallery":
       return (
         <div className="text-white">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6">Gallery & Wallpapers</h2>
+          <h2 className="text-3xl font-bold vista-text-gradient mb-6">Gallery</h2>
+          <h3 className="text-xl font-semibold mb-4 text-white/90">Project Gallery</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {[...Array(15)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.1 }}
+                className="aero-glass rounded-lg p-4 aspect-square relative group overflow-hidden cursor-pointer"
+                onClick={() => {
+                  if (setSelectedImage && onOpenWindow) {
+                    const imageData = {
+                      src: `/gallery/photo-${i + 1}.jpg`,
+                      alt: `Gallery photo ${i + 1}`
+                    };
+                    setSelectedImage(imageData);
+                    onOpenWindow("image-viewer");
+                  }
+                }}
+              >
+                <div className="absolute inset-0">
+                  <Image
+                    src={`/gallery/photo-${i + 1}.jpg`}
+                    alt={`Gallery photo ${i + 1}`}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <button className="text-white/80 hover:text-white transition-colors">
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      )
 
-          {/* Wallpaper Picker Section */}
+    case "image-viewer":
+      return <ImageViewer selectedImage={selectedImage} />;
+
+    case "wallpapers":
+      return (
+        <div className="text-white">
+          <h2 className="text-3xl font-bold vista-text-gradient mb-6">Desktop Wallpapers</h2>
           <div className="mb-8">
-            <h3 className="text-xl font-semibold mb-4 text-white/90">Desktop Wallpapers</h3>
+            <h3 className="text-xl font-semibold mb-4 text-white/90">Choose a Wallpaper</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {wallpapers.map((wallpaper, index) => (
                 <motion.div
@@ -800,72 +862,8 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
               ))}
             </div>
           </div>
-
-          {/* Project Gallery Section */}
-          <div>
-            <h3 className="text-xl font-semibold mb-4 text-white/90">Project Gallery</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {[...Array(15)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: i * 0.1 }}
-                  className="aero-glass rounded-lg p-4 aspect-square relative group overflow-hidden cursor-pointer"
-                  onClick={() => {
-                    console.log('Gallery image clicked:', i + 1);
-                    if (setSelectedImage && onOpenWindow) {
-                      const imageData = {
-                        src: `/gallery/photo-${i + 1}.jpg`,
-                        alt: `Gallery photo ${i + 1}`
-                      };
-                      console.log('Setting selected image:', imageData);
-                      setSelectedImage(imageData);
-                      console.log('Opening image viewer window');
-                      onOpenWindow("image-viewer");
-                    }
-                  }}
-                >
-                  <div className="absolute inset-0">
-                    <Image
-                      src={`/gallery/photo-${i + 1}.jpg`}
-                      alt={`Gallery photo ${i + 1}`}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <button className="text-white/80 hover:text-white transition-colors">
-                      <svg
-                        className="w-6 h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
         </div>
       )
-
-    case "image-viewer":
-      return <ImageViewer selectedImage={selectedImage} />;
 
     default:
       return (
@@ -891,6 +889,8 @@ export default function VistaDesktop() {
   const [powerAction, setPowerAction] = useState("")
   const [selectedWallpaper, setSelectedWallpaper] = useState<string | null>(null)
   const [selectedImage, setSelectedImage] = useState<{ src: string; alt: string } | null>(null)
+  // Add state for window size at the top of VistaDesktop
+  const [windowSize, setWindowSize] = useState({ width: 1200, height: 900 });
 
   // Sound refs
   const clickSoundRef = useRef<HTMLAudioElement | null>(null)
@@ -933,6 +933,18 @@ export default function VistaDesktop() {
     clickSoundRef.current = new Audio("/sounds/click.mp3")
     shutdownSoundRef.current = new Audio("/sounds/shutdown.mp3")
   }, [])
+
+  useEffect(() => {
+    const updateSize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
 
   const openWindow = (windowId: string) => {
     console.log("Opening window:", windowId)
@@ -1170,9 +1182,9 @@ export default function VistaDesktop() {
       id: "flappy-bird-game",
       title: "🎮 Jetpack Escape",
       content: (
-        <div className={window.id === "flappy-bird-game" ? "h-full" : "p-8"}>
+        <div className="h-full">
           <WindowContent 
-            windowId={window.id} 
+            windowId="flappy-bird-game" 
             onWallpaperChange={changeWallpaper} 
             wallpapers={wallpapers}
             onOpenWindow={openWindow}
@@ -1184,9 +1196,14 @@ export default function VistaDesktop() {
       isMinimized: false,
       isMaximized: false,
       position: { x: 350, y: 350 },
-      size: { width: Math.min(1200, window.innerWidth - 100), height: Math.min(900, window.innerHeight - 180) },
+      size: { width: Math.min(1200, windowSize.width - 100), height: Math.min(900, windowSize.height - 180) },
     },
   ]
+
+  // Handler to open the wallpapers window
+  const handleOpenWallpapers = () => {
+    openWindow('wallpapers');
+  };
 
   return (
     <div className="h-screen w-screen overflow-hidden relative" style={desktopStyle}>
@@ -1351,6 +1368,7 @@ export default function VistaDesktop() {
         showSearch={showSearch}
         showPowerMenu={showPowerMenu}
         onPowerAction={handlePowerAction}
+        onOpenWallpapers={handleOpenWallpapers}
       />
 
       {/* Power Screen Overlay */}
