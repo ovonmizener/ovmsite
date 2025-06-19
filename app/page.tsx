@@ -9,6 +9,7 @@ import VistaOrb from "@/components/vista-orb"
 import DesktopIcon from "@/components/desktop-icon"
 import Image from "next/image"
 import React from "react"
+import Cookies from "js-cookie"
 
 const initialIcons = [
   { id: "about", name: "About Me", icon: User, gridX: 0, gridY: 0 },
@@ -941,6 +942,7 @@ export default function VistaDesktop() {
   const [powerAction, setPowerAction] = useState("")
   const [selectedWallpaper, setSelectedWallpaper] = useState<string | null>(null)
   const [selectedImage, setSelectedImage] = useState<{ src: string; alt: string } | null>(null)
+  const [isFirstVisit, setIsFirstVisit] = useState(true)
   // Add state for window size at the top of VistaDesktop
   const [windowSize, setWindowSize] = useState({ width: 1200, height: 900 });
 
@@ -951,6 +953,17 @@ export default function VistaDesktop() {
   // Konami code detection
   const konamiCode = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"]
   const [konamiIndex, setKonamiIndex] = useState(0)
+
+  // Check for existing visit cookie on component mount
+  useEffect(() => {
+    const hasVisited = Cookies.get('hasVisited')
+    if (hasVisited) {
+      setIsFirstVisit(false)
+    } else {
+      // Set cookie for first visit (expires in 1 year)
+      Cookies.set('hasVisited', 'true', { expires: 365 })
+    }
+  }, [])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -1325,7 +1338,7 @@ export default function VistaDesktop() {
             style={{ zIndex: 1000 }}
           >
             <VistaWindow
-              title="Welcome"
+              title={isFirstVisit ? "Welcome" : "Welcome Back"}
               onClose={() => setShowWelcome(false)}
               onMinimize={() => {}}
               isActive={true}
@@ -1342,21 +1355,48 @@ export default function VistaDesktop() {
                   <Monitor className="w-24 h-24 mx-auto text-blue-400" />
                 </motion.div>
 
-                <p className="text-lg text-white/80 mb-8 leading-relaxed">
-                  Welcome to my website and portfolio. Inspired by the Frutiger Aero aesthetic, here you can find a little more about me, my projects and get in touch. This site serves as my personal portfolio.
-                </p>
+                {isFirstVisit ? (
+                  <>
+                    <p className="text-lg text-white/80 mb-8 leading-relaxed">
+                      Welcome to my website and portfolio. Inspired by the Frutiger Aero aesthetic, here you can find a little more about me, my projects and get in touch. This site serves as my personal portfolio.
+                    </p>
 
-                <div className="flex gap-4 justify-center">
-                  <VistaOrb onClick={() => openWindow("about")} className="vista-gradient-blue px-4 py-2">
-                    <User className="w-6 h-6" />
-                    <span className="ml-2">Get Started</span>
-                  </VistaOrb>
+                    <div className="flex gap-4 justify-center">
+                      <VistaOrb onClick={() => openWindow("about")} className="vista-gradient-blue px-4 py-2">
+                        <User className="w-6 h-6" />
+                        <span className="ml-2">Get Started</span>
+                      </VistaOrb>
 
-                  <VistaOrb onClick={() => openWindow("projects")} className="vista-gradient-green px-4 py-2">
-                    <Briefcase className="w-6 h-6" />
-                    <span className="ml-2">View Work</span>
-                  </VistaOrb>
-                </div>
+                      <VistaOrb onClick={() => openWindow("projects")} className="vista-gradient-green px-4 py-2">
+                        <Briefcase className="w-6 h-6" />
+                        <span className="ml-2">View Work</span>
+                      </VistaOrb>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-lg text-white/80 mb-8 leading-relaxed">
+                      Welcome back! It's great to see you again. Feel free to explore my latest updates, check out new projects, or just browse around. What would you like to see today?
+                    </p>
+
+                    <div className="flex gap-4 justify-center">
+                      <VistaOrb onClick={() => openWindow("about")} className="vista-gradient-blue px-4 py-2">
+                        <User className="w-6 h-6" />
+                        <span className="ml-2">About Me</span>
+                      </VistaOrb>
+
+                      <VistaOrb onClick={() => openWindow("projects")} className="vista-gradient-green px-4 py-2">
+                        <Briefcase className="w-6 h-6" />
+                        <span className="ml-2">My Projects</span>
+                      </VistaOrb>
+
+                      <VistaOrb onClick={() => openWindow("contact")} className="vista-gradient-purple px-4 py-2">
+                        <Mail className="w-6 h-6" />
+                        <span className="ml-2">Contact</span>
+                      </VistaOrb>
+                    </div>
+                  </>
+                )}
               </div>
             </VistaWindow>
           </motion.div>
