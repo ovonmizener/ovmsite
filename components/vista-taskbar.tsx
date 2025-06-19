@@ -214,6 +214,15 @@ export default function VistaTaskbar({
               >
                 Performance Monitor
               </button>
+              <button
+                className="w-full text-left p-3 rounded-lg hover:bg-white/10 transition-colors text-white mt-2"
+                onClick={() => {
+                  setShowExperienceMenu(false)
+                  openWindow("terminal")
+                }}
+              >
+                Terminal
+              </button>
             </div>
           </motion.div>
         )}

@@ -11,6 +11,7 @@ import PerformanceMonitorWindow from "./components/PerformanceMonitorWindow"
 import Image from "next/image"
 import React from "react"
 import Cookies from "js-cookie"
+import TerminalWindow from "./components/TerminalWindow"
 
 const initialIcons = [
   { id: "about", name: "About Me", icon: User, gridX: 0, gridY: 0 },
@@ -1077,6 +1078,9 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
           </div>
         </div>
       )
+
+    case "terminal":
+      return <TerminalWindow />
 
     default:
       return (
