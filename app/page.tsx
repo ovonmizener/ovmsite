@@ -524,24 +524,100 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
     case "businesses":
       return (
         <div className="text-white">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6">Business Ventures</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="vista-window p-6 rounded-lg"
-            >
-              <h3 className="text-xl font-semibold mb-4 text-white/90">JoyPop</h3>
-              <p className="text-white/80 mb-4">
-                A mobile app development company focused on creating engaging and innovative applications.
-              </p>
-              <div className="space-y-2">
-                <p className="text-sm text-white/70"><strong>Role:</strong> Founder & CEO</p>
-                <p className="text-sm text-white/70"><strong>Focus:</strong> Mobile App Development</p>
-                <p className="text-sm text-white/70"><strong>Status:</strong> Active</p>
+          <h2 className="text-3xl font-bold vista-text-gradient mb-8">Business Ventures</h2>
+          
+          {/* JoyPop Business Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="relative group cursor-pointer"
+            onClick={() => onOpenWindow("joypop")}
+          >
+            {/* Background with gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+            
+            {/* Main card content */}
+            <div className="relative bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-8 hover:bg-white/15 hover:border-white/30 transition-all duration-300 hover:scale-[1.02]">
+              
+              {/* Header with icon and title */}
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-400 rounded-xl flex items-center justify-center overflow-hidden">
+                  <img 
+                    src="/images/cuppylogo.JPG" 
+                    alt="JoyPop Logo" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-1">JoyPop</h3>
+                  <p className="text-purple-200 text-sm">Boba Cafe & Mobile Catering</p>
+                </div>
               </div>
-            </motion.div>
-          </div>
+              
+              {/* Description */}
+              <p className="text-white/90 text-lg leading-relaxed mb-6">
+                A boba cafe and mobile catering business that brings people together through great drinks and shared experiences. 
+                From our cozy cafe in Mesa to mobile events across Arizona.
+              </p>
+              
+              {/* Key details in a grid */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="bg-white/5 rounded-lg p-3">
+                  <p className="text-white/60 text-xs uppercase tracking-wide mb-1">Role</p>
+                  <p className="text-white font-medium">Founder & Owner</p>
+                </div>
+                <div className="bg-white/5 rounded-lg p-3">
+                  <p className="text-white/60 text-xs uppercase tracking-wide mb-1">Location</p>
+                  <p className="text-white font-medium">Mesa, Arizona</p>
+                </div>
+                <div className="bg-white/5 rounded-lg p-3">
+                  <p className="text-white/60 text-xs uppercase tracking-wide mb-1">Status</p>
+                  <p className="text-green-300 font-medium">Active</p>
+                </div>
+                <div className="bg-white/5 rounded-lg p-3">
+                  <p className="text-white/60 text-xs uppercase tracking-wide mb-1">Founded</p>
+                  <p className="text-white font-medium">2023</p>
+                </div>
+              </div>
+              
+              {/* Call to action */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-purple-200">
+                  <span className="text-sm font-medium">Explore JoyPop</span>
+                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+                <div className="text-xs text-white/50">
+                  Click to view details
+                </div>
+              </div>
+            </div>
+          </motion.div>
+          
+          {/* Future business placeholder */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mt-8 relative"
+          >
+            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 opacity-60">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-gray-400 to-gray-600 rounded-xl flex items-center justify-center text-2xl">
+                  🚀
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white/70 mb-1">Future Ventures</h3>
+                  <p className="text-white/50 text-sm">More businesses coming soon</p>
+                </div>
+              </div>
+              <p className="text-white/60">
+                Always exploring new opportunities and business ideas. Stay tuned for future ventures!
+              </p>
+            </div>
+          </motion.div>
         </div>
       )
     case "writing-samples":
