@@ -94,6 +94,7 @@ interface WindowContentProps {
   onOpenWindow: (windowId: string) => void;
   selectedImage?: { src: string; alt: string } | null;
   setSelectedImage?: (image: { src: string; alt: string } | null) => void;
+  isFirstVisit?: boolean;
 }
 
 const ImageViewer = React.memo(({ selectedImage }: { selectedImage: { src: string; alt: string } | null | undefined }) => {
@@ -124,7 +125,7 @@ const ImageViewer = React.memo(({ selectedImage }: { selectedImage: { src: strin
 
 ImageViewer.displayName = 'ImageViewer';
 
-function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, selectedImage, setSelectedImage }: WindowContentProps) {
+function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, selectedImage, setSelectedImage, isFirstVisit }: WindowContentProps) {
   const handleImageClick = (index: number) => {
     if (setSelectedImage) {
       setSelectedImage({
@@ -906,15 +907,82 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: index * 0.1 }}
-                  className="aero-glass rounded-lg p-4 cursor-pointer hover:scale-105 transition-transform"
+                  className="cursor-pointer group"
                   onClick={() => onWallpaperChange(wallpaper)}
                 >
-                  <div className="w-full h-20 rounded-lg mb-3" style={{ backgroundImage: wallpaper.backgroundImage }} />
-                  <p className="text-sm text-center font-medium">{wallpaper.name}</p>
+                  <div className="relative overflow-hidden rounded-lg vista-window p-2">
+                    <div
+                      className="w-full h-24 rounded-md"
+                      style={{
+                        background: wallpaper.backgroundImage,
+                        backgroundSize: wallpaper.backgroundSize,
+                        backgroundPosition: wallpaper.backgroundPosition,
+                      }}
+                    />
+                    <p className="text-center text-sm mt-2 text-white/80 group-hover:text-white transition-colors">
+                      {wallpaper.name}
+                    </p>
+                  </div>
                 </motion.div>
               ))}
             </div>
           </div>
+        </div>
+      )
+
+    case "welcome":
+      return (
+        <div className="p-8 text-center">
+          <motion.div
+            className="mb-6"
+            animate={{ rotate: [0, 5, -5, 0] }}
+            transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY }}
+          >
+            <Monitor className="w-24 h-24 mx-auto text-blue-400" />
+          </motion.div>
+
+          {isFirstVisit ? (
+            <>
+              <p className="text-lg text-white/80 mb-8 leading-relaxed">
+                Welcome to my website and portfolio. Inspired by the Frutiger Aero aesthetic, here you can find a little more about me, my projects and get in touch. This site serves as my personal portfolio.
+              </p>
+
+              <div className="flex gap-4 justify-center">
+                <VistaOrb onClick={() => onOpenWindow("about")} className="vista-gradient-blue px-4 py-2">
+                  <User className="w-6 h-6" />
+                  <span className="ml-2">Get Started</span>
+                </VistaOrb>
+
+                <VistaOrb onClick={() => onOpenWindow("projects")} className="vista-gradient-green px-4 py-2">
+                  <Briefcase className="w-6 h-6" />
+                  <span className="ml-2">View Work</span>
+                </VistaOrb>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="text-lg text-white/80 mb-8 leading-relaxed">
+                Welcome back! It's great to see you again. Feel free to explore my latest updates, check out new projects, or just browse around. What would you like to see today?
+              </p>
+
+              <div className="flex gap-4 justify-center">
+                <VistaOrb onClick={() => onOpenWindow("about")} className="vista-gradient-blue px-4 py-2">
+                  <User className="w-6 h-6" />
+                  <span className="ml-2">About Me</span>
+                </VistaOrb>
+
+                <VistaOrb onClick={() => onOpenWindow("projects")} className="vista-gradient-green px-4 py-2">
+                  <Briefcase className="w-6 h-6" />
+                  <span className="ml-2">My Projects</span>
+                </VistaOrb>
+
+                <VistaOrb onClick={() => onOpenWindow("contact")} className="vista-gradient-purple px-4 py-2">
+                  <Mail className="w-6 h-6" />
+                  <span className="ml-2">Contact</span>
+                </VistaOrb>
+              </div>
+            </>
+          )}
         </div>
       )
 
@@ -945,6 +1013,12 @@ export default function VistaDesktop() {
   const [isFirstVisit, setIsFirstVisit] = useState(true)
   // Add state for window size at the top of VistaDesktop
   const [windowSize, setWindowSize] = useState({ width: 1200, height: 900 });
+  
+  // Welcome window state
+  const [welcomeMinimized, setWelcomeMinimized] = useState(false)
+  const [welcomeFullScreen, setWelcomeFullScreen] = useState(false)
+  const [welcomePosition, setWelcomePosition] = useState({ x: 0, y: 0 })
+  const [welcomeLastPosition, setWelcomeLastPosition] = useState<{ x: number; y: number } | null>(null)
 
   // Sound refs
   const clickSoundRef = useRef<HTMLAudioElement | null>(null)
@@ -1191,7 +1265,7 @@ export default function VistaDesktop() {
   }
 
   const desktopStyle = {
-    backgroundImage: currentWallpaper.backgroundImage,
+    background: currentWallpaper.backgroundImage,
     backgroundSize: currentWallpaper.backgroundSize,
     backgroundPosition: currentWallpaper.backgroundPosition,
     animation: "vistaGradient 15s ease infinite",
@@ -1201,7 +1275,7 @@ export default function VistaDesktop() {
     {
       id: "welcome",
       title: "Welcome",
-      content: <WindowContent windowId="welcome" onWallpaperChange={setSelectedWallpaper} wallpapers={wallpapers} onOpenWindow={setActiveWindow} />,
+      content: <WindowContent windowId="welcome" onWallpaperChange={setSelectedWallpaper} wallpapers={wallpapers} onOpenWindow={setActiveWindow} isFirstVisit={isFirstVisit} />,
       isMinimized: false,
       isMaximized: false,
       position: { x: 100, y: 100 },
@@ -1210,7 +1284,7 @@ export default function VistaDesktop() {
     {
       id: "about",
       title: "About Me",
-      content: <WindowContent windowId="about" onWallpaperChange={setSelectedWallpaper} wallpapers={wallpapers} onOpenWindow={setActiveWindow} />,
+      content: <WindowContent windowId="about" onWallpaperChange={setSelectedWallpaper} wallpapers={wallpapers} onOpenWindow={setActiveWindow} isFirstVisit={isFirstVisit} />,
       isMinimized: false,
       isMaximized: false,
       position: { x: 150, y: 150 },
@@ -1219,7 +1293,7 @@ export default function VistaDesktop() {
     {
       id: "projects",
       title: "Projects",
-      content: <WindowContent windowId="projects" onWallpaperChange={setSelectedWallpaper} wallpapers={wallpapers} onOpenWindow={setActiveWindow} />,
+      content: <WindowContent windowId="projects" onWallpaperChange={setSelectedWallpaper} wallpapers={wallpapers} onOpenWindow={setActiveWindow} isFirstVisit={isFirstVisit} />,
       isMinimized: false,
       isMaximized: false,
       position: { x: 200, y: 200 },
@@ -1228,7 +1302,7 @@ export default function VistaDesktop() {
     {
       id: "gallery",
       title: "Gallery",
-      content: <WindowContent windowId="gallery" onWallpaperChange={setSelectedWallpaper} wallpapers={wallpapers} onOpenWindow={setActiveWindow} selectedImage={selectedImage} setSelectedImage={setSelectedImage} />,
+      content: <WindowContent windowId="gallery" onWallpaperChange={setSelectedWallpaper} wallpapers={wallpapers} onOpenWindow={setActiveWindow} selectedImage={selectedImage} setSelectedImage={setSelectedImage} isFirstVisit={isFirstVisit} />,
       isMinimized: false,
       isMaximized: false,
       position: { x: 250, y: 250 },
@@ -1237,7 +1311,7 @@ export default function VistaDesktop() {
     {
       id: "contact",
       title: "Contact",
-      content: <WindowContent windowId="contact" onWallpaperChange={setSelectedWallpaper} wallpapers={wallpapers} onOpenWindow={setActiveWindow} />,
+      content: <WindowContent windowId="contact" onWallpaperChange={setSelectedWallpaper} wallpapers={wallpapers} onOpenWindow={setActiveWindow} isFirstVisit={isFirstVisit} />,
       isMinimized: false,
       isMaximized: false,
       position: { x: 300, y: 300 },
@@ -1255,6 +1329,7 @@ export default function VistaDesktop() {
             onOpenWindow={openWindow}
             selectedImage={selectedImage}
             setSelectedImage={setSelectedImage}
+            isFirstVisit={isFirstVisit}
           />
         </div>
       ),
@@ -1269,6 +1344,39 @@ export default function VistaDesktop() {
   const handleOpenWallpapers = () => {
     openWindow('wallpapers');
   };
+
+  // Welcome window handlers
+  const handleWelcomeMinimize = () => {
+    setWelcomeMinimized(true)
+    setShowWelcome(false)
+  }
+
+  const handleWelcomeFullScreen = () => {
+    if (!welcomeFullScreen) {
+      // Going fullscreen: store current position
+      setWelcomeLastPosition(welcomePosition)
+      setWelcomeFullScreen(true)
+      setWelcomePosition({ x: 0, y: 0 })
+    } else {
+      // Exiting fullscreen: restore last position
+      setWelcomeFullScreen(false)
+      if (welcomeLastPosition) {
+        setWelcomePosition(welcomeLastPosition)
+        setWelcomeLastPosition(null)
+      }
+    }
+  }
+
+  const handleWelcomeRestore = () => {
+    setWelcomeMinimized(false)
+    setShowWelcome(true)
+  }
+
+  const handleWelcomeMove = (x: number, y: number) => {
+    if (!welcomeFullScreen) {
+      setWelcomePosition({ x, y })
+    }
+  }
 
   return (
     <div className="h-screen w-screen overflow-hidden relative" style={desktopStyle}>
@@ -1329,22 +1437,34 @@ export default function VistaDesktop() {
 
       {/* Welcome Window */}
       <AnimatePresence>
-        {showWelcome && openWindows.length === 0 && (
+        {showWelcome && !welcomeMinimized && openWindows.length === 0 && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8, y: 50 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 50 }}
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-            style={{ zIndex: 1000 }}
+            className="absolute"
+            style={
+              welcomeFullScreen
+                ? { zIndex: 1000, left: 0, top: 0, width: '100vw', height: '100vh' }
+                : { 
+                    zIndex: 1000, 
+                    left: welcomePosition.x || '50%', 
+                    top: welcomePosition.y || '50%', 
+                    transform: welcomePosition.x ? 'none' : 'translate(-50%, -50%)'
+                  }
+            }
           >
             <VistaWindow
               title={isFirstVisit ? "Welcome" : "Welcome Back"}
               onClose={() => setShowWelcome(false)}
-              onMinimize={() => {}}
+              onMinimize={handleWelcomeMinimize}
+              onFullScreen={handleWelcomeFullScreen}
               isActive={true}
-              width={700}
-              height={500}
-              isDraggable={false}
+              width={welcomeFullScreen ? windowSize.width : 700}
+              height={welcomeFullScreen ? windowSize.height : 500}
+              isDraggable={!welcomeFullScreen}
+              isFullScreen={welcomeFullScreen}
+              onMove={handleWelcomeMove}
             >
               <div className="p-8 text-center">
                 <motion.div
@@ -1421,15 +1541,19 @@ export default function VistaDesktop() {
               }
             >
               <VistaWindow
-                title={desktopIcons.find((icon) => icon.id === win.id)?.name || win.id}
+                title={
+                  win.id === "welcome" 
+                    ? (isFirstVisit ? "Welcome" : "Welcome Back")
+                    : desktopIcons.find((icon) => icon.id === win.id)?.name || win.id
+                }
                 onClose={() => closeWindow(win.id)}
                 onMinimize={() => minimizeWindow(win.id)}
                 onFullScreen={() => toggleFullScreen(win.id)}
                 isActive={activeWindow === win.id}
                 onClick={() => bringWindowToFront(win.id)}
                 onMove={(x, y) => updateWindowPosition(win.id, x, y)}
-                width={win.id === "flappy-bird-game" ? 900 : 800}
-                height={win.id === "flappy-bird-game" ? 800 : 600}
+                width={win.id === "flappy-bird-game" ? 900 : win.id === "welcome" ? 700 : 800}
+                height={win.id === "flappy-bird-game" ? 800 : win.id === "welcome" ? 500 : 600}
                 isDraggable={!win.isFullScreen}
                 isFullScreen={win.isFullScreen}
               >
@@ -1441,6 +1565,7 @@ export default function VistaDesktop() {
                     onOpenWindow={openWindow}
                     selectedImage={selectedImage}
                     setSelectedImage={setSelectedImage}
+                    isFirstVisit={isFirstVisit}
                   />
                 </div>
               </VistaWindow>
@@ -1450,10 +1575,22 @@ export default function VistaDesktop() {
 
       {/* Taskbar - Now at top */}
       <VistaTaskbar
-        openWindows={openWindows.map((w) => w.id)}
-        minimizedWindows={openWindows.filter((w) => w.isMinimized).map((w) => w.id)}
+        openWindows={[
+          ...openWindows.map((w) => w.id),
+          ...(welcomeMinimized ? ["welcome"] : [])
+        ]}
+        minimizedWindows={[
+          ...openWindows.filter((w) => w.isMinimized).map((w) => w.id),
+          ...(welcomeMinimized ? ["welcome"] : [])
+        ]}
         activeWindow={activeWindow}
-        onWindowClick={bringWindowToFront}
+        onWindowClick={(windowId) => {
+          if (windowId === "welcome") {
+            handleWelcomeRestore()
+          } else {
+            bringWindowToFront(windowId)
+          }
+        }}
         currentTime={currentTime}
         onSearch={handleSearch}
         onPowerMenu={handlePowerMenu}
