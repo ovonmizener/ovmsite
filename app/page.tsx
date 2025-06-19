@@ -7,6 +7,7 @@ import VistaTaskbar from "@/components/vista-taskbar"
 import VistaWindow from "@/components/vista-window"
 import VistaOrb from "@/components/vista-orb"
 import DesktopIcon from "@/components/desktop-icon"
+import PerformanceMonitorWindow from "./components/PerformanceMonitorWindow"
 import Image from "next/image"
 import React from "react"
 import Cookies from "js-cookie"
@@ -939,6 +940,9 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
         </div>
       )
 
+    case "performance-monitor":
+      return <PerformanceMonitorWindow />;
+
     case "welcome":
       return (
         <div className="p-8 text-center">
@@ -1702,6 +1706,7 @@ export default function VistaDesktop() {
         showPowerMenu={showPowerMenu}
         onPowerAction={handlePowerAction}
         onOpenWallpapers={handleOpenWallpapers}
+        openWindow={openWindow}
       />
 
       {/* Power Screen Overlay */}

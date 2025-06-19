@@ -17,6 +17,7 @@ interface VistaTaskbarProps {
   showPowerMenu: boolean
   onPowerAction: (action: string) => void
   onOpenWallpapers?: () => void
+  openWindow: (windowId: string) => void
 }
 
 export default function VistaTaskbar({
@@ -31,6 +32,7 @@ export default function VistaTaskbar({
   showPowerMenu,
   onPowerAction,
   onOpenWallpapers,
+  openWindow,
 }: VistaTaskbarProps) {
   const [searchQuery, setSearchQuery] = useState("")
   const [showExperienceMenu, setShowExperienceMenu] = useState(false)
@@ -202,6 +204,15 @@ export default function VistaTaskbar({
                 }}
               >
                 Wallpapers
+              </button>
+              <button
+                className="w-full text-left p-3 rounded-lg hover:bg-white/10 transition-colors text-white mt-2"
+                onClick={() => {
+                  setShowExperienceMenu(false)
+                  openWindow("performance-monitor")
+                }}
+              >
+                Performance Monitor
               </button>
             </div>
           </motion.div>
