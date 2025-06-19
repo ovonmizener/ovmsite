@@ -508,20 +508,37 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
     case "music-sentiment":
       return (
         <div className="text-white">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6">Music Sentiment Analysis</h2>
-          <div className="aero-glass rounded-lg p-6">
-            <p className="text-white/80 mb-4">A machine learning project that analyzes emotional patterns in music using ML techniques.</p>
-            <a 
-              href="https://github.com/ovonmizener/project4-databootcamp" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
-            >
-              <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-              </svg>
-              View on GitHub
-            </a>
+          <h2 className="text-3xl font-bold vista-text-gradient mb-6">Sonic Sentiments – Music Sentiment Analyzer</h2>
+          <div className="space-y-6">
+            {/* GitHub Link at the Top */}
+            <div className="pb-2">
+              <a 
+                href="https://github.com/ovonmizener/project4-databootcamp" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-4 py-2 rounded-lg bg-blue-500/20 hover:bg-blue-500/40 transition-colors border border-blue-400"
+              >
+                <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                View on GitHub
+              </a>
+            </div>
+            {/* Project Overview */}
+            <div className="bg-white/5 border-l-4 border-blue-400 rounded-lg p-6">
+              <h3 className="text-xl font-semibold mb-2 text-blue-200">Project Overview</h3>
+              <p className="text-white/80 mb-2">For my data analytics bootcamp capstone, I built Sonic Sentiments, a web app that analyzes song lyrics for sentiment and genre. Using a Spotify dataset, I cleaned and preprocessed data, applied NLP techniques with TextBlob and TF-IDF, and trained models like logistic regression and Random Forest to predict sentiment and musical features.</p>
+            </div>
+            {/* What I Built & Learned */}
+            <div className="bg-white/5 border-l-4 border-green-400 rounded-lg p-6">
+              <h3 className="text-xl font-semibold mb-2 text-green-200">What I Built & Learned</h3>
+              <p className="text-white/80 mb-2">I developed the data pipeline in Python, handled NLP and model training with scikit-learn, and created a Flask backend with a user-friendly Dash dashboard to visualize trends and user inputs. The project combined data cleaning, modeling, and deployment into a seamless app.</p>
+            </div>
+            {/* Real-World Application */}
+            <div className="bg-white/5 border-l-4 border-yellow-400 rounded-lg p-6">
+              <h3 className="text-xl font-semibold mb-2 text-yellow-200">How This Applies to Real-World Projects</h3>
+              <p className="text-white/80">This experience reflects the full data analytics workflow, from raw data to interactive insights, applicable to customer feedback analysis, internal tools, or any project needing clear, data-driven storytelling.</p>
+            </div>
           </div>
         </div>
       )
@@ -603,20 +620,56 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
     case "joypop":
       return (
         <div className="text-white">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6">JoyPop - Mobile Boba Cafe</h2>
-          <div className="aero-glass rounded-lg p-6">
-            <p className="text-white/80 mb-4">A mobile boba tea business bringing joy through delicious drinks.</p>
-            <a 
-              href="https://joypop.jp/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
-              Visit Website
-            </a>
+          <h2 className="text-3xl font-bold vista-text-gradient mb-6">JoyPop Boba Cafe</h2>
+
+          {/* Responsive Image Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+            <img src="/images/joypop/Capture1.JPG" alt="JoyPop boba and van" className="rounded-xl shadow-lg object-cover w-full h-56 sm:h-64" />
+            <img src="/images/joypop/0P2A7628.jpg" alt="JoyPop outdoor event" className="rounded-xl shadow-lg object-cover w-full h-56 sm:h-64" />
+            <img src="/images/joypop/Capture.JPG" alt="JoyPop van and boba" className="rounded-xl shadow-lg object-cover w-full h-56 sm:h-64" />
+            <img src="/images/joypop/IMG_6873.jpg" alt="JoyPop indoor booth" className="rounded-xl shadow-lg object-cover w-full h-56 sm:h-64" />
+          </div>
+
+          <div className="space-y-6">
+            {/* About Section */}
+            <div className="aero-glass rounded-lg p-6">
+              <h3 className="text-xl font-semibold mb-4 text-white/90">About JoyPop Boba Cafe</h3>
+              <p className="text-white/80 mb-4">I started JoyPop out of a love for community and boba culture. What began with a quirky little Suzuki JoyPop Every van has since grown into a full-service boba cafe and mobile catering business. I wanted to build something that felt fun, high-quality, and a little unexpected—something that brought people together through great drinks and shared experiences. Now based in Mesa, Arizona, JoyPop continues to reflect that original spark of creativity and joy.</p>
+            </div>
+
+            {/* Services Section */}
+            <div className="aero-glass rounded-lg p-6">
+              <h3 className="text-xl font-semibold mb-4 text-white/90">Services: In-Store & Mobile</h3>
+              <p className="text-white/80 mb-4">At our cafe, guests can enjoy handcrafted boba drinks in a cozy, welcoming space. We also specialize in mobile boba catering for events of all kinds—weddings, birthdays, corporate gatherings, and more. Our services are fully customizable, with options ranging from full-service boba bars to self-serve stations and bottled drinks. I also offer private tasting sessions to help clients craft the perfect signature drink for their event.</p>
+            </div>
+
+            {/* Location & Contact Section */}
+            <div className="aero-glass rounded-lg p-6">
+              <h3 className="text-xl font-semibold mb-4 text-white/90">Location & Contact</h3>
+              <p className="text-white/80 mb-4">You can find JoyPop inside The Enclave Salon Suites at 4936 S Power Rd #120, Mesa, AZ 85212. For event bookings or questions, I'm always happy to connect—just reach out at (480) 420‑4758 or email me at oliver@joypop.jp.</p>
+              <div className="flex gap-4 mt-6">
+                <a 
+                  href="https://joypop.jp/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+                >
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                  Visit Website
+                </a>
+                <a 
+                  href="tel:+14804204758"
+                  className="inline-flex items-center px-4 py-2 rounded-lg bg-green-500/20 hover:bg-green-500/30 transition-colors border border-green-500/30"
+                >
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                  Call (480) 420-4758
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       )
@@ -624,9 +677,58 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
     case "portfolio":
       return (
         <div className="text-white">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6">This Website - Portfolio Project</h2>
-          <div className="aero-glass rounded-lg p-6">
-            <p className="text-white/80 mb-4">Project details coming soon...</p>
+          <h2 className="text-3xl font-bold vista-text-gradient mb-6">This Website – Portfolio Project</h2>
+          <div className="space-y-6">
+            {/* Ethos & Inspiration */}
+            <div className="bg-white/5 border-l-4 border-cyan-400 rounded-lg p-6">
+              <h3 className="text-xl font-semibold mb-2 text-cyan-200">Ethos & Inspiration</h3>
+              <p className="text-white/80 mb-2">
+                This site is a love letter to the <span className="font-bold text-cyan-300">Frutiger Aero</span> aesthetic—think glassy surfaces, playful gradients, and a sense of digital optimism. I wanted to create a portfolio that felt like a desktop OS from a parallel universe: interactive, fun, and a little nostalgic, but with modern web tech under the hood.
+              </p>
+            </div>
+            {/* Tech Stack */}
+            <div className="bg-white/5 border-l-4 border-blue-400 rounded-lg p-6">
+              <h3 className="text-xl font-semibold mb-2 text-blue-200">Tech Stack</h3>
+              <ul className="list-disc list-inside text-white/80 space-y-1">
+                <li><span className="font-bold text-blue-300">Next.js</span> (App Router, SSR, API routes)</li>
+                <li><span className="font-bold text-blue-300">React</span> (component-driven UI)</li>
+                <li><span className="font-bold text-blue-300">Tailwind CSS</span> (utility-first styling, custom themes)</li>
+                <li><span className="font-bold text-blue-300">Framer Motion</span> (animations, drag & drop)</li>
+                <li><span className="font-bold text-blue-300">TypeScript</span> (type safety everywhere)</li>
+                <li><span className="font-bold text-blue-300">Prisma</span> (future-proofed for backend/data)</li>
+              </ul>
+            </div>
+            {/* Features */}
+            <div className="bg-white/5 border-l-4 border-green-400 rounded-lg p-6">
+              <h3 className="text-xl font-semibold mb-2 text-green-200">Features</h3>
+              <ul className="list-disc list-inside text-white/80 space-y-1">
+                <li>Draggable, resizable windows (like a real OS)</li>
+                <li>Animated taskbar, start orb, and desktop icons</li>
+                <li>Project popups with embedded games, galleries, and more</li>
+                <li>Responsive design for desktop and mobile</li>
+                <li>Custom themes and wallpapers</li>
+                <li>Konami code easter egg 🕹️</li>
+              </ul>
+            </div>
+            {/* Technical Hurdles */}
+            <div className="bg-white/5 border-l-4 border-yellow-400 rounded-lg p-6">
+              <h3 className="text-xl font-semibold mb-2 text-yellow-200">Technical Hurdles</h3>
+              <ul className="list-disc list-inside text-white/80 space-y-1">
+                <li>Making iframes and canvases scale perfectly inside draggable windows (CSS height inheritance is tricky!)</li>
+                <li>Managing z-index and focus for overlapping windows</li>
+                <li>State management for window positions, sizes, and active status</li>
+                <li>Ensuring smooth drag-and-drop and animation performance</li>
+                <li>Balancing aesthetics with accessibility and responsiveness</li>
+              </ul>
+            </div>
+            {/* Screenshots Placeholder */}
+            <div className="bg-white/5 border-l-4 border-pink-400 rounded-lg p-6">
+              <h3 className="text-xl font-semibold mb-2 text-pink-200">Screenshots</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="border-2 border-dashed border-pink-400 rounded-lg h-40 flex items-center justify-center text-pink-300 text-lg">Screenshot coming soon!</div>
+                <div className="border-2 border-dashed border-pink-400 rounded-lg h-40 flex items-center justify-center text-pink-300 text-lg">Screenshot coming soon!</div>
+              </div>
+            </div>
           </div>
         </div>
       )
