@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { User, Briefcase, Mail, Monitor, ImageIcon, Power, Users } from "lucide-react"
+import { User, Briefcase, Mail, Monitor, ImageIcon, Power, Users, Building2, FileText } from "lucide-react"
 import VistaTaskbar from "@/components/vista-taskbar"
 import VistaWindow from "@/components/vista-window"
 import VistaOrb from "@/components/vista-orb"
@@ -12,10 +12,12 @@ import React from "react"
 
 const initialIcons = [
   { id: "about", name: "About Me", icon: User, gridX: 0, gridY: 0 },
+  { id: "social", name: "Social Media", icon: Users, gridX: 1, gridY: 0 },
   { id: "projects", name: "Projects", icon: Briefcase, gridX: 0, gridY: 1 },
-  { id: "contact", name: "Contact", icon: Mail, gridX: 0, gridY: 2 },
-  { id: "gallery", name: "Gallery", icon: ImageIcon, gridX: 0, gridY: 3 },
-  { id: "social", name: "Social Media", icon: Users, gridX: 0, gridY: 4 },
+  { id: "businesses", name: "Businesses", icon: Building2, gridX: 0, gridY: 2 },
+  { id: "writing-samples", name: "Writing Samples", icon: FileText, gridX: 0, gridY: 3 },
+  { id: "contact", name: "Contact", icon: Mail, gridX: 0, gridY: 4 },
+  { id: "gallery", name: "Gallery", icon: ImageIcon, gridX: 0, gridY: 5 },
 ]
 
 const GRID_SIZE = 100 // Size of each grid cell
@@ -477,12 +479,6 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
                 desc: "A Python implementation of Jetpack Escape, now playable in your browser!"
               },
               { 
-                id: "joypop",
-                name: "JoyPop", 
-                tech: "Mobile Boba Cafe", 
-                desc: "Innovative mobile boba tea business"
-              },
-              { 
                 id: "portfolio",
                 name: "This Website", 
                 tech: "Portfolio Project", 
@@ -508,6 +504,55 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
                 <p className="text-white/80 text-sm">{project.desc}</p>
               </motion.div>
             ))}
+          </div>
+        </div>
+      )
+
+    case "businesses":
+      return (
+        <div className="text-white">
+          <h2 className="text-3xl font-bold vista-text-gradient mb-6">Business Ventures</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="vista-window p-6 rounded-lg"
+            >
+              <h3 className="text-xl font-semibold mb-4 text-white/90">JoyPop</h3>
+              <p className="text-white/80 mb-4">
+                A mobile app development company focused on creating engaging and innovative applications.
+              </p>
+              <div className="space-y-2">
+                <p className="text-sm text-white/70"><strong>Role:</strong> Founder & CEO</p>
+                <p className="text-sm text-white/70"><strong>Focus:</strong> Mobile App Development</p>
+                <p className="text-sm text-white/70"><strong>Status:</strong> Active</p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      )
+    case "writing-samples":
+      return (
+        <div className="text-white">
+          <h2 className="text-3xl font-bold vista-text-gradient mb-6">Writing Samples</h2>
+          <div className="space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="vista-window p-6 rounded-lg"
+            >
+              <h3 className="text-xl font-semibold mb-4 text-white/90">Coming Soon</h3>
+              <p className="text-white/80 mb-4">
+                This section will showcase various writing samples, including technical documentation, 
+                creative writing, and professional articles.
+              </p>
+              <div className="space-y-2">
+                <p className="text-sm text-white/70">• Technical Documentation</p>
+                <p className="text-sm text-white/70">• Creative Writing</p>
+                <p className="text-sm text-white/70">• Professional Articles</p>
+                <p className="text-sm text-white/70">• Blog Posts</p>
+              </div>
+            </motion.div>
           </div>
         </div>
       )
