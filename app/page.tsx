@@ -1745,7 +1745,7 @@ export default function VistaDesktop() {
                 initialX={win.x}
                 initialY={win.y}
               >
-                <div className={win.id === "flappy-bird-game" ? "h-full" : "p-8"}>
+                <div className={win.id === "flappy-bird-game" || win.id === "terminal" ? "h-full" : "p-8"}>
                   <WindowContent 
                     windowId={win.id} 
                     onWallpaperChange={changeWallpaper} 

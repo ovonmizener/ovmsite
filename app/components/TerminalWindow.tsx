@@ -245,12 +245,12 @@ Total: 7 items`
       {/* Terminal Content */}
       <div 
         ref={terminalRef}
-        className="flex-1 p-4 overflow-y-auto bg-transparent"
+        className="flex-1 overflow-y-auto bg-transparent p-2"
         style={{ fontFamily: 'Consolas, Monaco, monospace' }}
       >
         {/* Welcome Message */}
         {history.length === 0 && (
-          <div className="mb-4">
+          <div className="mb-2">
             <div className="text-white/90">
               Welcome to Oliver's Portfolio Terminal v1.0.0
             </div>
@@ -265,7 +265,7 @@ Total: 7 items`
 
         {/* Command History */}
         {history.map((line) => (
-          <div key={line.id} className="mb-1">
+          <div key={line.id} className="mb-0.5">
             <div 
               className={`${
                 line.type === 'input' ? 'text-blue-300' : 
@@ -278,7 +278,7 @@ Total: 7 items`
         ))}
 
         {/* Input Line */}
-        <form onSubmit={handleSubmit} className="flex items-center">
+        <form onSubmit={handleSubmit} className="flex items-center mt-1">
           <span className="text-blue-300 mr-2">$</span>
           <div className="flex-1 flex items-center relative">
             <input

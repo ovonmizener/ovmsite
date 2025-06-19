@@ -14,6 +14,7 @@ interface VistaWindowProps {
   width: number
   height: number
   isDraggable: boolean
+  noPadding?: boolean
   children: React.ReactNode
 }
 
@@ -29,6 +30,7 @@ export const VistaWindow: React.FC<VistaWindowProps> = ({
   width,
   height,
   isDraggable,
+  noPadding = false,
   children
 }) => {
   const [isDragging, setIsDragging] = React.useState(false)
@@ -109,7 +111,7 @@ export const VistaWindow: React.FC<VistaWindowProps> = ({
       </div>
 
       {/* Window Content */}
-      <div className="p-4 h-[calc(100%-40px)] overflow-auto">
+      <div className={`${noPadding ? 'h-full' : 'p-4 h-[calc(100%-40px)]'} overflow-auto`}>
         {children}
       </div>
     </motion.div>
