@@ -6,17 +6,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-
-const skills = [
-  "Python",
-  "SQL",
-  "Data Visualization",
-  "Machine Learning",
-  "Lean Six Sigma",
-  "Product Management",
-  "Communication Strategy",
-  "Knowledge Management",
-]
+import { getSkillsList } from "@/lib/data"
 
 const experience = [
   { year: "2024", title: "Data Analytics Bootcamp", company: "Arizona State University" },
@@ -139,7 +129,7 @@ export default function AboutPage() {
                 <CardContent className="p-0">
                   <h3 className="text-2xl font-bold mb-6 text-vista-blue">Skills</h3>
                   <div className="grid grid-cols-2 gap-3">
-                    {skills.map((skill, index) => (
+                    {getSkillsList().map((skill, index) => (
                       <motion.div
                         key={skill}
                         initial={{ opacity: 0, scale: 0.8 }}

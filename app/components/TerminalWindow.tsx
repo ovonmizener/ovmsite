@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react"
 import { Terminal, HelpCircle, User, Coffee, Heart, Zap, Star } from "lucide-react"
+import { userInfo, getSkillsList, getRandomFortune, fileStructure } from "@/lib/data"
 
 interface TerminalCommand {
   name: string
@@ -26,27 +27,8 @@ export default function TerminalWindow() {
   const terminalRef = useRef<HTMLDivElement>(null)
   const cursorRef = useRef<HTMLDivElement>(null)
 
-  // Static skills data (read-only)
-  const skills = [
-    "Python", "SQL", "JavaScript", "APIs", "Data Analysis", "Tableau", 
-    "CSS", "Matplotlib", "JavaScript Libraries", "Contentful", "Data Analytics", 
-    "SharePoint", "Project Management", "Documentation", "Communication", 
-    "Training & Development", "Presentations", "Editing", "Voice Over / Public Speaking"
-  ]
-
-  // Fortune quotes
-  const fortunes = [
-    "A bug in the hand is better than one as yet undetected.",
-    "The best code is no code at all.",
-    "There are 10 types of people: those who understand binary and those who don't.",
-    "It's not a bug, it's an undocumented feature.",
-    "The only way to learn a new programming language is by writing programs in it.",
-    "Talk is cheap. Show me the code.",
-    "First, solve the problem. Then, write the code.",
-    "Code is like humor. When you have to explain it, it's bad.",
-    "Sometimes it pays to stay in bed on Monday, rather than spending the rest of the week debugging Monday's code.",
-    "The most damaging phrase in the language is 'We've always done it this way!'"
-  ]
+  // Get skills from centralized data
+  const skills = getSkillsList()
 
   // Command definitions
   const commands: Record<string, TerminalCommand> = {
@@ -86,20 +68,20 @@ Total: ${skills.length} skills mastered`
       description: "Display user information",
       execute: () => {
         return `User Information:
-  Name: Oliver von Mizener
-  Role: Full-Stack Developer & Data Analyst
-  Location: Mesa, Arizona
-  Interests: Machine Learning, AI, Boba Tea, Classic Cars
-  Current Project: This Vista-inspired portfolio
+  Name: ${userInfo.name}
+  Role: ${userInfo.role}
+  Location: ${userInfo.location}
+  Interests: ${userInfo.interests.join(', ')}
+  Current Project: ${userInfo.currentProject}
 
-"Part legal technologist, part data nerd, part boba-slinging entrepreneur" - Oliver`
+"${userInfo.tagline}" - ${userInfo.name}`
       }
     },
     fortune: {
       name: "fortune",
       description: "Display a random fortune",
       execute: () => {
-        const randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)]
+        const randomFortune = getRandomFortune()
         return `"${randomFortune}"`
       }
     },
@@ -122,16 +104,7 @@ Total: ${skills.length} skills mastered`
       name: "ls",
       description: "List files (simulated)",
       execute: () => {
-        return `Desktop/
-├── about.txt
-├── projects/
-├── contact.txt
-├── social/
-├── businesses/
-├── writing-samples/
-└── gallery/
-
-Total: 7 items`
+        return fileStructure
       }
     },
     pwd: {
@@ -287,7 +260,7 @@ Total: 7 items`
               value={inputValue}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
-              className="flex-1 bg-transparent text-white/90 outline-none border-none"
+              className="flex-1 bg-transparent text-white/90 outline-none border-none relative z-10"
               placeholder="Type a command..."
               autoComplete="off"
               spellCheck="false"
@@ -295,10 +268,11 @@ Total: 7 items`
             {/* Blinking cursor positioned at the end of input */}
             <div 
               ref={cursorRef}
-              className="w-2.5 h-4 bg-blue-300 absolute"
+              className="w-2.5 h-4 bg-blue-300 absolute pointer-events-none"
               style={{ 
                 left: `${cursorPosition * 0.6}em`,
-                animation: 'blink 1s infinite'
+                animation: 'blink 1s infinite',
+                zIndex: 5
               }}
             ></div>
           </div>

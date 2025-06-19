@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
 import { Download, ExternalLink, Github, Linkedin, Twitter, Mail, Phone, MapPin } from "lucide-react"
+import { motion } from "framer-motion"
+import { getSkillsList } from "@/lib/data"
 
 interface WindowContentProps {
   windowId: string
@@ -14,17 +16,6 @@ interface WindowContentProps {
   selectedImage?: { src: string; alt: string } | null
   setSelectedImage?: (image: { src: string; alt: string } | null) => void
 }
-
-const skills = [
-  "Python",
-  "SQL",
-  "Data Visualization",
-  "Machine Learning",
-  "Lean Six Sigma",
-  "Product Management",
-  "Communication Strategy",
-  "Knowledge Management",
-]
 
 const experience = [
   { year: "2024", title: "Data Analytics Bootcamp", company: "Arizona State University" },
@@ -143,7 +134,7 @@ export function WindowContent({
               <div className="mt-8">
                 <h2 className="text-xl font-bold mb-4">Skills</h2>
                 <div className="grid grid-cols-2 gap-3">
-                  {skills.map((skill) => (
+                  {getSkillsList().map((skill) => (
                     <div
                       key={skill}
                       className="bg-gray-100 dark:bg-gray-800 rounded-xl px-4 py-3 text-sm font-medium text-center"
