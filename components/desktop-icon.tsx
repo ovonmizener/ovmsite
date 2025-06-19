@@ -13,7 +13,7 @@ interface DesktopIconProps {
 export default function DesktopIcon({ icon: Icon, label, onClick, onMove }: DesktopIconProps) {
   return (
     <motion.div
-      className="flex flex-col items-center p-3 rounded-lg hover:bg-white/10 transition-colors group cursor-pointer select-none"
+      className="flex flex-col items-center px-1 py-3 rounded-lg hover:bg-white/10 transition-colors group cursor-pointer select-none"
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       drag
