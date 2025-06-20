@@ -13,7 +13,7 @@ import React from "react"
 import Cookies from "js-cookie"
 import TerminalWindow from "./components/TerminalWindow"
 import { getSkillsList } from "@/lib/data"
-import BootAnimation from "./components/BootAnimation"
+import BootAnimation from "@/app/components/BootAnimation"
 
 const initialIcons = [
   { id: "about", name: "About Me", icon: User, gridX: 0, gridY: 0 },
@@ -891,6 +891,20 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
                 <p className="text-sm text-white/70">• Blog Posts</p>
               </div>
             </motion.div>
+            <div className="text-center">
+              <p className="text-white/80 mb-4">In the meantime, follow my writing here</p>
+              <a 
+                href="https://medium.com/@oliver.von.mizener" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+              >
+                <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M7.45,3.05C5.8,3.05,4.5,4.35,4.5,6s1.3,2.95,2.95,2.95S10.4,7.65,10.4,6,9.1,3.05,7.45,3.05Zm5.53,0c-1.65,0-2.95,1.35-2.95,3s1.3,3,2.95,3,2.95-1.35,2.95-3S14.63,3.05,12.98,3.05Zm5.57,0c-1.65,0-2.95,1.35-2.95,3s1.3,3,2.95,3,2.95-1.35,2.95-3S20.18,3.05,18.55,3.05Z" />
+                </svg>
+                View on Medium
+              </a>
+            </div>
           </div>
         </div>
       )
