@@ -1935,15 +1935,18 @@ export default function VistaDesktop() {
 
       {/* Desktop Icons */}
       <div className="absolute top-0 left-0 right-0 bottom-0 p-8 pointer-events-none">
-        <div className={`grid gap-0 mt-24 ${isMobile ? 'grid-cols-2 gap-4' : 'grid-cols-2 gap-0'}`} style={{ 
+        <div className={`grid mt-24 ${isMobile ? 'grid-cols-2 gap-4' : 'grid-cols-2 gap-8'}`} style={{ 
           maxWidth: isMobile ? "100%" : "400px", 
           minHeight: "calc(100vh - 200px)", 
-          columnGap: isMobile ? "16px" : "8px" 
+          gridTemplateColumns: isMobile ? "1fr 1fr" : `${GRID_SIZE}px ${GRID_SIZE}px`,
+          gridAutoRows: `${GRID_SIZE}px`,
+          columnGap: isMobile ? "16px" : "16px",
+          rowGap: isMobile ? "16px" : "16px"
         }}>
           {desktopIcons.map((icon) => (
             <motion.div
               key={icon.id}
-              className="pointer-events-auto"
+              className="pointer-events-auto flex justify-center"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}

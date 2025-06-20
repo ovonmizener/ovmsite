@@ -55,7 +55,7 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({
   return (
     <motion.div
       ref={iconRef}
-      className="flex flex-col items-center gap-2 cursor-pointer select-none"
+      className="flex flex-col items-center gap-2 cursor-pointer select-none w-fit"
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={onClick}
@@ -69,7 +69,7 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({
           className="object-contain"
         />
       </div>
-      <span className="text-white text-sm text-center max-w-[100px] break-words">
+      <span className="text-white text-sm text-center max-w-[80px] break-words leading-tight">
         {label}
       </span>
     </motion.div>
