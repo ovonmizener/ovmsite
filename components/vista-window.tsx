@@ -10,7 +10,7 @@ interface VistaWindowProps {
   title: string
   children: ReactNode
   onClose: () => void
-  onMinimize: () => void
+  onMinimize?: () => void
   onFullScreen?: () => void
   isActive?: boolean
   onClick?: () => void
@@ -46,6 +46,20 @@ export default function VistaWindow({
   const [startResizePos, setStartResizePos] = useState({ x: 0, y: 0 })
   const [startResizeSize, setStartResizeSize] = useState({ width: 0, height: 0 })
   const [startResizeWindowPos, setStartResizeWindowPos] = useState({ x: 0, y: 0 })
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      const isMobileDevice = window.innerWidth <= 768 || 
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      setIsMobile(isMobileDevice)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const handleResizeStart = (direction: string, e: React.MouseEvent) => {
     if (isFullScreen || !onResize) return
@@ -118,7 +132,7 @@ export default function VistaWindow({
   // Portal logic for full screen
   const windowContent = (
     <motion.div
-      className={`vista-window ${isActive ? "vista-glow-blue" : ""} ${isFullScreen ? "fixed" : "cursor-move"} relative`}
+      className={`vista-window ${isActive ? "vista-glow-blue" : ""} ${isFullScreen ? "fixed" : ""} relative`}
       style={{ 
         width: isFullScreen ? "100%" : width, 
         height: isFullScreen ? "calc(100% - 64px)" : height,
@@ -130,19 +144,19 @@ export default function VistaWindow({
         zIndex: isFullScreen ? 9999 : undefined
       }}
       onClick={onClick}
-      drag={isDraggable && !isFullScreen && !isResizing}
+      drag={isDraggable && !isFullScreen && !isResizing && !isMobile}
       dragMomentum={false}
       dragElastic={0}
       onDrag={(event, info) => {
-        if (onMove && isDraggable && !isFullScreen && !isResizing) {
+        if (onMove && isDraggable && !isFullScreen && !isResizing && !isMobile) {
           onMove(info.point.x - width / 2, info.point.y - height / 2)
         }
       }}
-      whileHover={isDraggable && !isFullScreen ? { scale: 1.01 } : {}}
+      whileHover={isDraggable && !isFullScreen && !isMobile ? { scale: 1.01 } : {}}
       transition={{ duration: 0.2 }}
     >
-      {/* Resize Handles */}
-      {!isFullScreen && onResize && (
+      {/* Resize Handles - Disabled on mobile */}
+      {!isFullScreen && onResize && !isMobile && (
         <>
           {/* Corner handles */}
           <div 
@@ -184,7 +198,7 @@ export default function VistaWindow({
 
       {/* Title Bar */}
       <div 
-        className="flex items-center justify-between p-4 border-b border-white/20 flex-shrink-0 cursor-move"
+        className={`flex items-center justify-between border-b border-white/20 flex-shrink-0 ${isMobile ? 'p-3' : 'p-4'}`}
         style={{
           position: isFullScreen ? "absolute" : "relative",
           top: isFullScreen ? 0 : undefined,
@@ -192,26 +206,27 @@ export default function VistaWindow({
           right: isFullScreen ? 0 : undefined,
           zIndex: isFullScreen ? 10000 : undefined,
           backgroundColor: isFullScreen ? "rgba(0, 0, 0, 0.8)" : undefined,
-          backdropFilter: isFullScreen ? "blur(8px)" : undefined
+          backdropFilter: isFullScreen ? "blur(8px)" : undefined,
+          cursor: isMobile ? "default" : "move"
         }}
       >
         <div className="flex items-center space-x-3">
           <div className="w-4 h-4 rounded-full vista-gradient-blue vista-reflection"></div>
-          <h3 className="font-semibold text-white vista-text-glow">{title}</h3>
+          <h3 className={`font-semibold text-white vista-text-glow ${isMobile ? 'text-sm' : ''}`}>{title}</h3>
         </div>
 
         <div className="flex items-center space-x-2">
           <button
-            className="w-6 h-6 rounded-full bg-yellow-400/80 hover:bg-yellow-400 transition-colors flex items-center justify-center cursor-pointer"
+            className={`${isMobile ? 'w-8 h-8' : 'w-6 h-6'} rounded-full bg-yellow-400/80 hover:bg-yellow-400 transition-colors flex items-center justify-center cursor-pointer`}
             onClick={(e) => {
               e.stopPropagation()
-              onMinimize()
+              onMinimize?.()
             }}
           >
-            <Minus className="w-3 h-3 text-yellow-900" />
+            <Minus className={`${isMobile ? 'w-4 h-4' : 'w-3 h-3'} text-yellow-900`} />
           </button>
           <button 
-            className="w-6 h-6 rounded-full bg-green-400/80 hover:bg-green-400 transition-colors flex items-center justify-center cursor-pointer"
+            className={`${isMobile ? 'w-8 h-8' : 'w-6 h-6'} rounded-full bg-green-400/80 hover:bg-green-400 transition-colors flex items-center justify-center cursor-pointer`}
             onClick={(e) => {
               e.stopPropagation()
               if (!isFullScreen && onMove) {
@@ -220,16 +235,16 @@ export default function VistaWindow({
               onFullScreen?.()
             }}
           >
-            <Square className="w-3 h-3 text-green-900" />
+            <Square className={`${isMobile ? 'w-4 h-4' : 'w-3 h-3'} text-green-900`} />
           </button>
           <button
             onClick={(e) => {
               e.stopPropagation()
               onClose()
             }}
-            className="w-6 h-6 rounded-full bg-red-400/80 hover:bg-red-400 transition-colors flex items-center justify-center cursor-pointer"
+            className={`${isMobile ? 'w-8 h-8' : 'w-6 h-6'} rounded-full bg-red-400/80 hover:bg-red-400 transition-colors flex items-center justify-center cursor-pointer`}
           >
-            <X className="w-3 h-3 text-red-900" />
+            <X className={`${isMobile ? 'w-4 h-4' : 'w-3 h-3'} text-red-900`} />
           </button>
         </div>
       </div>

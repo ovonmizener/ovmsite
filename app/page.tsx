@@ -104,6 +104,7 @@ interface WindowContentProps {
   isFirstVisit?: boolean;
   browserWindow?: { url: string; title: string } | null;
   setBrowserWindow?: (browser: { url: string; title: string } | null) => void;
+  isMobile?: boolean;
 }
 
 const ImageViewer = React.memo(({ selectedImage }: { selectedImage: { src: string; alt: string } | null | undefined }) => {
@@ -335,7 +336,7 @@ const SocialCard = ({ social, index }: { social: any; index: number }) => (
   </div>
 );
 
-function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, selectedImage, setSelectedImage, isFirstVisit, browserWindow, setBrowserWindow }: WindowContentProps) {
+function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, selectedImage, setSelectedImage, isFirstVisit, browserWindow, setBrowserWindow, isMobile }: WindowContentProps) {
   const handleImageClick = (index: number) => {
     if (setSelectedImage) {
       setSelectedImage({
@@ -1276,16 +1277,16 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
             animate={{ rotate: [0, 5, -5, 0] }}
             transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY }}
           >
-            <Monitor className="w-24 h-24 mx-auto text-blue-400" />
+            <Monitor className={`${isMobile ? 'w-16 h-16' : 'w-24 h-24'} mx-auto text-blue-400`} />
           </motion.div>
 
           {isFirstVisit ? (
             <>
-              <p className="text-lg text-white/80 mb-8 leading-relaxed">
+              <p className={`${isMobile ? 'text-base' : 'text-lg'} text-white/80 mb-8 leading-relaxed`}>
                 Welcome to my website and portfolio. Inspired by the Frutiger Aero aesthetic, here you can find a little more about me, my projects and get in touch. This site serves as my personal portfolio.
               </p>
 
-              <div className="flex gap-4 justify-center">
+              <div className={`flex ${isMobile ? 'flex-col gap-3' : 'gap-4'} justify-center`}>
                 <VistaOrb onClick={() => onOpenWindow("about")} className="vista-gradient-blue px-4 py-2">
                   <User className="w-6 h-6" />
                   <span className="ml-2">Get Started</span>
@@ -1299,11 +1300,11 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
             </>
           ) : (
             <>
-              <p className="text-lg text-white/80 mb-8 leading-relaxed">
+              <p className={`${isMobile ? 'text-base' : 'text-lg'} text-white/80 mb-8 leading-relaxed`}>
                 Welcome back! It's great to see you again. Feel free to explore my latest updates, check out new projects, or just browse around. What would you like to see today?
               </p>
 
-              <div className="flex gap-4 justify-center">
+              <div className={`flex ${isMobile ? 'flex-col gap-3' : 'gap-4'} justify-center`}>
                 <VistaOrb onClick={() => onOpenWindow("about")} className="vista-gradient-blue px-4 py-2">
                   <User className="w-6 h-6" />
                   <span className="ml-2">About Me</span>
@@ -1417,7 +1418,6 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
 }
 
 export default function VistaDesktop() {
-  const [currentTime, setCurrentTime] = useState(new Date())
   const [openWindows, setOpenWindows] = useState<DesktopWindowState[]>([])
   const [activeWindow, setActiveWindow] = useState<string | null>(null)
   const [showWelcome, setShowWelcome] = useState(true)
@@ -1444,6 +1444,12 @@ export default function VistaDesktop() {
   const [welcomeLastPosition, setWelcomeLastPosition] = useState<{ x: number; y: number } | null>(null)
   const [welcomeSize, setWelcomeSize] = useState({ width: 700, height: 500 })
   const [showBootAnimation, setShowBootAnimation] = useState(true);
+  
+  // Add state to prevent hydration mismatch
+  const [isClient, setIsClient] = useState(false)
+  
+  // Add mobile detection
+  const [isMobile, setIsMobile] = useState(false)
 
   // Sound refs
   const clickSoundRef = useRef<HTMLAudioElement | null>(null)
@@ -1452,6 +1458,24 @@ export default function VistaDesktop() {
   // Konami code detection
   const konamiCode = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"]
   const [konamiIndex, setKonamiIndex] = useState(0)
+
+  // Set isClient to true after hydration
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      const isMobileDevice = window.innerWidth <= 768 || 
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      setIsMobile(isMobileDevice)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Boot animation timer
   useEffect(() => {
@@ -1500,15 +1524,21 @@ export default function VistaDesktop() {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [konamiIndex, openWindows])
 
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000)
-    return () => clearInterval(timer)
-  }, [])
+  // Timer removed - VistaTaskbar now handles time internally
 
   // Load sound effects
   useEffect(() => {
-    clickSoundRef.current = new Audio("/sounds/click.mp3")
-    shutdownSoundRef.current = new Audio("/sounds/shutdown.mp3")
+    try {
+      clickSoundRef.current = new Audio("/sounds/click.mp3")
+      shutdownSoundRef.current = new Audio("/sounds/shutdown.mp3")
+      
+      // Preload sounds and handle errors silently
+      clickSoundRef.current.load()
+      shutdownSoundRef.current.load()
+    } catch (error) {
+      // Silently handle sound loading errors
+      console.log("Sound files not available - continuing without audio")
+    }
   }, [])
 
   useEffect(() => {
@@ -1527,7 +1557,11 @@ export default function VistaDesktop() {
     console.log("Opening window:", windowId)
     setShowWelcome(false)
     // Play click sound
-    clickSoundRef.current?.play().catch(e => console.error("Error playing click sound:", e))
+    if (clickSoundRef.current) {
+      clickSoundRef.current.play().catch(() => {
+        // Silently handle play errors
+      })
+    }
 
     // Check if window is already open but minimized
     const existingWindow = openWindows.find((w: DesktopWindowState) => w.id === windowId)
@@ -1557,28 +1591,41 @@ export default function VistaDesktop() {
     const screenWidth = window.innerWidth
     const screenHeight = window.innerHeight - 80 // Account for taskbar at top
 
-    // For the game window, use a large square size
-    const isGameWindow = windowId === "flappy-bird-game"
-    const isTextEditor = windowId === "text-editor"
-    const maxSquare = Math.min(window.innerWidth, window.innerHeight - 80, 1000)
-    const initialWindowWidth = isGameWindow ? maxSquare : isTextEditor ? 500 : 800
-    const initialWindowHeight = isGameWindow ? maxSquare : isTextEditor ? 400 : 600
+    // Mobile-responsive window sizing
+    let windowWidth, windowHeight, x, y
 
-    // Ensure square window for the game
-    const windowWidth = isGameWindow ? maxSquare : initialWindowWidth
-    const windowHeight = isGameWindow ? maxSquare : initialWindowHeight
+    if (isMobile) {
+      // On mobile: full-width windows with appropriate height
+      windowWidth = screenWidth - 20 // Full width minus small margins
+      windowHeight = Math.min(screenHeight - 100, 600) // Reasonable height for mobile
+      
+      // Center the window on mobile
+      x = 10 // Small margin from left
+      y = 90 // Below taskbar with small margin
+    } else {
+      // Desktop: original logic
+      const isGameWindow = windowId === "flappy-bird-game"
+      const isTextEditor = windowId === "text-editor"
+      const maxSquare = Math.min(window.innerWidth, window.innerHeight - 80, 1000)
+      const initialWindowWidth = isGameWindow ? maxSquare : isTextEditor ? 500 : 800
+      const initialWindowHeight = isGameWindow ? maxSquare : isTextEditor ? 400 : 600
 
-    const baseX = 100 + openWindows.length * 50
-    const baseY = 100 + openWindows.length * 50 + 80 // Add offset for top taskbar
+      // Ensure square window for the game
+      windowWidth = isGameWindow ? maxSquare : initialWindowWidth
+      windowHeight = isGameWindow ? maxSquare : initialWindowHeight
 
-    // Ensure window doesn't go off screen
-    const x = Math.min(baseX, screenWidth - windowWidth - 50)
-    const y = Math.min(baseY, screenHeight - 80 - windowHeight - 50)
+      const baseX = 100 + openWindows.length * 50
+      const baseY = 100 + openWindows.length * 50 + 80 // Add offset for top taskbar
+
+      // Ensure window doesn't go off screen
+      x = Math.min(baseX, screenWidth - windowWidth - 50)
+      y = Math.min(baseY, screenHeight - 80 - windowHeight - 50)
+    }
 
     // Create new window
     const newWindow: DesktopWindowState = {
       id: windowId,
-      x: Math.max(50, x), // Minimum 50px from left edge
+      x: Math.max(10, x), // Minimum 10px from left edge (5px on mobile)
       y: Math.max(80, y), // Minimum 80px from top edge (below taskbar)
       zIndex: nextZIndex,
       isMinimized: false,
@@ -1660,7 +1707,11 @@ export default function VistaDesktop() {
     setShowPowerScreen(true)
     setShowPowerMenu(false)
     // Play shutdown sound
-    shutdownSoundRef.current?.play().catch(e => console.error("Error playing shutdown sound:", e))
+    if (shutdownSoundRef.current) {
+      shutdownSoundRef.current.play().catch(() => {
+        // Silently handle play errors
+      })
+    }
 
     // Auto-restore after 2 seconds
     setTimeout(() => {
@@ -1777,6 +1828,7 @@ export default function VistaDesktop() {
             isFirstVisit={isFirstVisit}
             browserWindow={browserWindow}
             setBrowserWindow={setBrowserWindow}
+            isMobile={isMobile}
           />
         </div>
       ),
@@ -1850,16 +1902,16 @@ export default function VistaDesktop() {
             className="absolute w-32 h-32 rounded-full vista-glow-blue opacity-20"
             style={{
               background: `radial-gradient(circle, rgba(116, 185, 255, 0.3) 0%, transparent 70%)`,
-              left: `${Math.random() * 80 + 10}%`,
-              top: `${Math.random() * 80 + 10}%`,
+              left: `${(i * 15) % 80 + 10}%`,
+              top: `${(i * 12 + 20) % 80 + 10}%`,
             }}
-            animate={{
-              x: [0, Math.random() * 100 - 50],
-              y: [0, Math.random() * 100 - 50],
+            animate={isClient ? {
+              x: [0, (i * 20) % 100 - 50],
+              y: [0, (i * 15) % 100 - 50],
               scale: [1, 1.2, 1],
-            }}
+            } : {}}
             transition={{
-              duration: 10 + Math.random() * 10,
+              duration: 10 + (i * 2),
               repeat: Number.POSITIVE_INFINITY,
               ease: "easeInOut",
             }}
@@ -1869,7 +1921,11 @@ export default function VistaDesktop() {
 
       {/* Desktop Icons */}
       <div className="absolute top-0 left-0 right-0 bottom-0 p-8 pointer-events-none">
-        <div className="grid grid-cols-2 gap-0 mt-24" style={{ maxWidth: "400px", minHeight: "calc(100vh - 200px)", columnGap: "8px" }}>
+        <div className={`grid gap-0 mt-24 ${isMobile ? 'grid-cols-2 gap-4' : 'grid-cols-2 gap-0'}`} style={{ 
+          maxWidth: isMobile ? "100%" : "400px", 
+          minHeight: "calc(100vh - 200px)", 
+          columnGap: isMobile ? "16px" : "8px" 
+        }}>
           {desktopIcons.map((icon) => (
             <motion.div
               key={icon.id}
@@ -1886,7 +1942,7 @@ export default function VistaDesktop() {
                 icon={icon.icon}
                 label={icon.name}
                 onClick={() => openWindow(icon.id)}
-                onMove={(deltaX, deltaY) => {
+                onMove={isMobile ? undefined : (deltaX, deltaY) => {
                   const newGridX = Math.round(deltaX / GRID_SIZE)
                   const newGridY = Math.round(deltaY / GRID_SIZE)
                   moveIcon(icon.id, newGridX, newGridY)
@@ -1899,14 +1955,14 @@ export default function VistaDesktop() {
 
       {/* Welcome Window */}
       <AnimatePresence>
-        {showWelcome && !welcomeMinimized && openWindows.length === 0 && (
+        {!showBootAnimation && showWelcome && !welcomeMinimized && openWindows.length === 0 && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8, y: 50 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 50 }}
             className="absolute"
             style={
-              welcomeFullScreen
+              welcomeFullScreen || isMobile
                 ? { zIndex: 1000, left: 0, top: 0, width: '100vw', height: '100vh' }
                 : { 
                     zIndex: 1000, 
@@ -1919,34 +1975,34 @@ export default function VistaDesktop() {
             <VistaWindow
               title={isFirstVisit ? "Welcome" : "Welcome Back"}
               onClose={() => setShowWelcome(false)}
-              onMinimize={handleWelcomeMinimize}
+              onMinimize={isMobile ? undefined : handleWelcomeMinimize}
               onFullScreen={handleWelcomeFullScreen}
               isActive={true}
-              width={welcomeFullScreen ? windowSize.width : welcomeSize.width}
-              height={welcomeFullScreen ? windowSize.height : welcomeSize.height}
-              isDraggable={!welcomeFullScreen}
-              isFullScreen={welcomeFullScreen}
+              width={welcomeFullScreen || isMobile ? windowSize.width : welcomeSize.width}
+              height={welcomeFullScreen || isMobile ? windowSize.height : welcomeSize.height}
+              isDraggable={!welcomeFullScreen && !isMobile}
+              isFullScreen={welcomeFullScreen || isMobile}
               onMove={handleWelcomeMove}
               onResize={handleWelcomeResize}
               initialX={welcomePosition.x}
               initialY={welcomePosition.y}
             >
-              <div className="p-8 text-center">
+              <div className={`${isMobile ? 'p-4' : 'p-8'} text-center`}>
                 <motion.div
                   className="mb-6"
                   animate={{ rotate: [0, 5, -5, 0] }}
                   transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY }}
                 >
-                  <Monitor className="w-24 h-24 mx-auto text-blue-400" />
+                  <Monitor className={`${isMobile ? 'w-16 h-16' : 'w-24 h-24'} mx-auto text-blue-400`} />
                 </motion.div>
 
                 {isFirstVisit ? (
                   <>
-                    <p className="text-lg text-white/80 mb-8 leading-relaxed">
+                    <p className={`${isMobile ? 'text-base' : 'text-lg'} text-white/80 mb-8 leading-relaxed`}>
                       Welcome to my website and portfolio. Inspired by the Frutiger Aero aesthetic, here you can find a little more about me, my projects and get in touch. This site serves as my personal portfolio.
                     </p>
 
-                    <div className="flex gap-4 justify-center">
+                    <div className={`flex ${isMobile ? 'flex-col gap-3' : 'gap-4'} justify-center`}>
                       <VistaOrb onClick={() => openWindow("about")} className="vista-gradient-blue px-4 py-2">
                         <User className="w-6 h-6" />
                         <span className="ml-2">Get Started</span>
@@ -1960,11 +2016,11 @@ export default function VistaDesktop() {
                   </>
                 ) : (
                   <>
-                    <p className="text-lg text-white/80 mb-8 leading-relaxed">
+                    <p className={`${isMobile ? 'text-base' : 'text-lg'} text-white/80 mb-8 leading-relaxed`}>
                       Welcome back! It's great to see you again. Feel free to explore my latest updates, check out new projects, or just browse around. What would you like to see today?
                     </p>
 
-                    <div className="flex gap-4 justify-center">
+                    <div className={`flex ${isMobile ? 'flex-col gap-3' : 'gap-4'} justify-center`}>
                       <VistaOrb onClick={() => openWindow("about")} className="vista-gradient-blue px-4 py-2">
                         <User className="w-6 h-6" />
                         <span className="ml-2">About Me</span>
@@ -2036,6 +2092,7 @@ export default function VistaDesktop() {
                     isFirstVisit={isFirstVisit}
                     browserWindow={browserWindow}
                     setBrowserWindow={setBrowserWindow}
+                    isMobile={isMobile}
                   />
                 </div>
               </VistaWindow>
@@ -2061,7 +2118,6 @@ export default function VistaDesktop() {
             bringWindowToFront(windowId)
           }
         }}
-        currentTime={currentTime}
         onSearch={handleSearch}
         onPowerMenu={handlePowerMenu}
         showSearch={showSearch}

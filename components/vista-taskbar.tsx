@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Search, Power } from "lucide-react"
 import VistaOrb from "./vista-orb"
@@ -10,7 +10,7 @@ interface VistaTaskbarProps {
   minimizedWindows: string[]
   activeWindow: string | null
   onWindowClick: (windowId: string) => void
-  currentTime: Date
+  currentTime?: Date
   onSearch: () => void
   onPowerMenu: () => void
   showSearch: boolean
@@ -36,7 +36,25 @@ export default function VistaTaskbar({
 }: VistaTaskbarProps) {
   const [searchQuery, setSearchQuery] = useState("")
   const [showExperienceMenu, setShowExperienceMenu] = useState(false)
+  const [isClient, setIsClient] = useState(false)
+  const [clientTime, setClientTime] = useState(new Date())
   const handleOpenWallpapers = onOpenWallpapers || (() => {})
+
+  // Set isClient to true after hydration
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  // Update client time every second
+  useEffect(() => {
+    if (!isClient) return
+    
+    const timer = setInterval(() => {
+      setClientTime(new Date())
+    }, 1000)
+    
+    return () => clearInterval(timer)
+  }, [isClient])
 
   const searchableContent = [
     { title: "About Me", content: "full-stack developer passionate creative", type: "page", id: "about" },
@@ -267,12 +285,14 @@ export default function VistaTaskbar({
         {/* System Tray - Time, Date, Power */}
         <div className="flex items-center space-x-4">
           <div className="text-white/80 text-sm font-medium">
-            {currentTime.toLocaleTimeString([], {
+            {isClient ? clientTime.toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
-            })}
+            }) : "--:--"}
           </div>
-          <div className="text-white/60 text-xs">{currentTime.toLocaleDateString()}</div>
+          <div className="text-white/60 text-xs">
+            {isClient ? clientTime.toLocaleDateString() : "--/--/----"}
+          </div>
           <div className="relative">
             <VistaOrb className="w-8 h-8" onClick={onPowerMenu}>
               <Power className="w-3 h-3" />
