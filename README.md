@@ -87,6 +87,25 @@ This results in "refused to connect" errors when trying to load these sites inli
 - **Bookmarks and history** functionality
 - **Custom error pages** with Vista styling
 
+## Sound Effects (Experiment - Disabled)
+
+This project previously experimented with startup and shutdown sound effects (Vista-style boot/shutdown sounds). The implementation included:
+
+- Playing a startup sound after the boot animation, triggered by user interaction to comply with browser autoplay policies.
+- Playing a shutdown sound on power actions.
+- Handling browser autoplay restrictions with a click-through prompt after the boot animation.
+
+**Why it's disabled:**
+- Browser autoplay policies are strict and inconsistent across browsers.
+- The user experience was not ideal without a guaranteed, seamless sound.
+- The code and sound files are now archived for future reference.
+
+**How to re-enable:**
+- See the `public/sounds/archive/` directory for the sound files.
+- See previous commits for the sound logic and click-through boot animation.
+
+Feel free to revisit and re-enable this feature in the future!
+
 ## Development
 
 ### **Tech Stack:**

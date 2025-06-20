@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { User, Briefcase, Mail, Monitor, ImageIcon, Power, Users, Building2, FileText, Trash2 } from "lucide-react"
 import VistaTaskbar from "@/components/vista-taskbar"
@@ -1465,10 +1465,6 @@ export default function VistaDesktop() {
   // Add mobile detection
   const [isMobile, setIsMobile] = useState(false)
 
-  // Sound refs
-  const clickSoundRef = useRef<HTMLAudioElement | null>(null)
-  const shutdownSoundRef = useRef<HTMLAudioElement | null>(null)
-
   // Konami code detection
   const konamiCode = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"]
   const [konamiIndex, setKonamiIndex] = useState(0)
@@ -1540,20 +1536,37 @@ export default function VistaDesktop() {
 
   // Timer removed - VistaTaskbar now handles time internally
 
-  // Load sound effects
-  useEffect(() => {
-    try {
-      clickSoundRef.current = new Audio("/sounds/click.mp3")
-      shutdownSoundRef.current = new Audio("/sounds/shutdown.mp3")
-      
-      // Preload sounds and handle errors silently
-      clickSoundRef.current.load()
-      shutdownSoundRef.current.load()
-    } catch (error) {
-      // Silently handle sound loading errors
-      console.log("Sound files not available - continuing without audio")
-    }
-  }, [])
+  // Load sound effects - DISABLED FOR NOW
+  // useEffect(() => {
+  //   try {
+  //     clickSoundRef.current = new Audio("/sounds/click.mp3")
+  //     shutdownSoundRef.current = new Audio("/sounds/shutdown.mp3")
+  //     startupSoundRef.current = new Audio("/sounds/startup.aiff")
+  //     
+  //     // Set volumes for better user experience
+  //     if (clickSoundRef.current) clickSoundRef.current.volume = 0.3
+  //     if (shutdownSoundRef.current) shutdownSoundRef.current.volume = 0.4
+  //     if (startupSoundRef.current) startupSoundRef.current.volume = 0.5
+  //     
+  //     // Preload sounds and handle errors silently
+  //     clickSoundRef.current.load()
+  //     shutdownSoundRef.current.load()
+  //     startupSoundRef.current.load()
+  //     
+  //     // Add event listeners for debugging
+  //     if (startupSoundRef.current) {
+  //       startupSoundRef.current.addEventListener('canplaythrough', () => {
+  //         console.log('Startup sound loaded successfully')
+  //       })
+  //       startupSoundRef.current.addEventListener('error', (e) => {
+  //         console.error('Startup sound error:', e)
+  //       })
+  //     }
+  //   } catch (error) {
+  //     // Silently handle sound loading errors
+  //     console.log("Sound files not available - continuing without audio")
+  //   }
+  // }, [])
 
   useEffect(() => {
     const updateSize = () => {
@@ -1570,12 +1583,12 @@ export default function VistaDesktop() {
   const openWindow = (windowId: string) => {
     console.log("Opening window:", windowId)
     setShowWelcome(false)
-    // Play click sound
-    if (clickSoundRef.current) {
-      clickSoundRef.current.play().catch(() => {
-        // Silently handle play errors
-      })
-    }
+    // Play click sound - DISABLED FOR NOW
+    // if (clickSoundRef.current) {
+    //   clickSoundRef.current.play().catch(() => {
+    //     // Silently handle play errors
+    //   })
+    // }
 
     // Check if window is already open but minimized
     const existingWindow = openWindows.find((w: DesktopWindowState) => w.id === windowId)
@@ -1717,20 +1730,31 @@ export default function VistaDesktop() {
   }
 
   const handlePowerAction = (action: string) => {
-    setPowerAction(action)
-    setShowPowerScreen(true)
+    console.log("Power action:", action)
     setShowPowerMenu(false)
-    // Play shutdown sound
-    if (shutdownSoundRef.current) {
-      shutdownSoundRef.current.play().catch(() => {
-        // Silently handle play errors
-      })
-    }
+    setShowPowerScreen(true)
 
-    // Auto-restore after 2 seconds
+    // Play shutdown sound - DISABLED FOR NOW
+    // if ((action === "shutdown" || action === "restart" || action === "logoff") && shutdownSoundRef.current) {
+    //   shutdownSoundRef.current.currentTime = 0 // Reset to beginning
+    //   shutdownSoundRef.current.play().catch(() => {
+    //     // Silently handle play errors
+    //   })
+    // }
+
+    // Simulate power action delay
     setTimeout(() => {
       setShowPowerScreen(false)
-      setPowerAction("")
+      if (action === "shutdown") {
+        // In a real app, this would shut down the system
+        console.log("System shutdown")
+      } else if (action === "restart") {
+        // In a real app, this would restart the system
+        console.log("System restart")
+      } else if (action === "logoff") {
+        // In a real app, this would log off the user
+        console.log("User logoff")
+      }
     }, 2000)
   }
 
@@ -1780,78 +1804,6 @@ export default function VistaDesktop() {
     backgroundPosition: currentWallpaper.backgroundPosition,
     animation: "vistaGradient 15s ease infinite",
   }
-
-  const windows = [
-    {
-      id: "welcome",
-      title: "Welcome",
-      content: <WindowContent windowId="welcome" onWallpaperChange={setSelectedWallpaper} wallpapers={wallpapers} onOpenWindow={setActiveWindow} isFirstVisit={isFirstVisit} />,
-      isMinimized: false,
-      isMaximized: false,
-      position: { x: 100, y: 100 },
-      size: { width: 600, height: 400 },
-    },
-    {
-      id: "about",
-      title: "About Me",
-      content: <WindowContent windowId="about" onWallpaperChange={setSelectedWallpaper} wallpapers={wallpapers} onOpenWindow={setActiveWindow} isFirstVisit={isFirstVisit} />,
-      isMinimized: false,
-      isMaximized: false,
-      position: { x: 150, y: 150 },
-      size: { width: 800, height: 600 },
-    },
-    {
-      id: "projects",
-      title: "Projects",
-      content: <WindowContent windowId="projects" onWallpaperChange={setSelectedWallpaper} wallpapers={wallpapers} onOpenWindow={setActiveWindow} isFirstVisit={isFirstVisit} />,
-      isMinimized: false,
-      isMaximized: false,
-      position: { x: 200, y: 200 },
-      size: { width: 800, height: 600 },
-    },
-    {
-      id: "gallery",
-      title: "Gallery",
-      content: <WindowContent windowId="gallery" onWallpaperChange={setSelectedWallpaper} wallpapers={wallpapers} onOpenWindow={setActiveWindow} selectedImage={selectedImage} setSelectedImage={setSelectedImage} isFirstVisit={isFirstVisit} />,
-      isMinimized: false,
-      isMaximized: false,
-      position: { x: 250, y: 250 },
-      size: { width: 800, height: 600 },
-    },
-    {
-      id: "contact",
-      title: "Contact",
-      content: <WindowContent windowId="contact" onWallpaperChange={setSelectedWallpaper} wallpapers={wallpapers} onOpenWindow={setActiveWindow} isFirstVisit={isFirstVisit} />,
-      isMinimized: false,
-      isMaximized: false,
-      position: { x: 300, y: 300 },
-      size: { width: 600, height: 400 },
-    },
-    {
-      id: "flappy-bird-game",
-      title: "🎮 Jetpack Escape",
-      content: (
-        <div className="h-full">
-          <WindowContent 
-            windowId="flappy-bird-game" 
-            onWallpaperChange={changeWallpaper} 
-            wallpapers={wallpapers}
-            onOpenWindow={openWindow}
-            selectedImage={selectedImage}
-            setSelectedImage={setSelectedImage}
-            isFirstVisit={isFirstVisit}
-            browserWindow={browserWindow}
-            setBrowserWindow={setBrowserWindow}
-            isMobile={isMobile}
-          />
-        </div>
-      ),
-      isMinimized: false,
-      isMaximized: false,
-      position: { x: 350, y: 350 },
-      size: { width: Math.min(1200, windowSize.width - 100), height: Math.min(900, windowSize.height - 180) },
-    },
-  ]
 
   // Handler to open the wallpapers window
   const handleOpenWallpapers = () => {
