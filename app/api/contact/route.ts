@@ -1,5 +1,14 @@
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 // import nodemailer from 'nodemailer';
+
+// Define the schema for input validation using Zod
+const contactSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters long.'),
+  email: z.string().email('Invalid email address.'),
+  subject: z.string().min(3, 'Subject must be at least 3 characters long.'),
+  message: z.string().min(10, 'Message must be at least 10 characters long.'),
+});
 
 // Create a transporter using environment variables
 // const transporter = nodemailer.createTransporter({
@@ -12,15 +21,19 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   try {
-    const { name, email, subject, message } = await req.json();
+    const body = await req.json();
 
-    // Validate input
-    if (!name || !email || !subject || !message) {
+    // Validate input against the schema
+    const validation = contactSchema.safeParse(body);
+
+    if (!validation.success) {
       return NextResponse.json(
-        { error: 'All fields are required' },
+        { error: 'Invalid input.', issues: validation.error.issues },
         { status: 400 }
       );
     }
+
+    const { name, email, subject, message } = validation.data;
 
     // Create email content
     const mailOptions = {
