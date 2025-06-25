@@ -16,6 +16,8 @@ import TerminalWindow from "./components/TerminalWindow"
 import { getSkillsList } from "@/lib/data"
 import BootAnimation from "@/app/components/BootAnimation"
 import SampleWindow from "./components/SampleWindow"
+import ModelViewer from './components/ModelViewer'
+import SecretDevLog from "./components/SecretDevLog"
 
 const initialIcons = [
   { id: "about", name: "About Me", icon: User, gridX: 0, gridY: 0 },
@@ -1389,6 +1391,9 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
 
     case "sample":
       return <SampleWindow />
+
+    case "secret-dev-log":
+      return <SecretDevLog />;
 
     default:
       return (
