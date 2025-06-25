@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { User, Briefcase, Mail, Monitor, ImageIcon, Power, Users, Building2, FileText, Trash2 } from "lucide-react"
+import { User, Briefcase, Mail, Monitor, ImageIcon, Power, Users, Building2, FileText, Trash2, Folder } from "lucide-react"
 import VistaTaskbar from "@/components/vista-taskbar"
 import VistaWindow from "@/components/vista-window"
 import VistaOrb from "@/components/vista-orb"
@@ -14,6 +14,7 @@ import Cookies from "js-cookie"
 import TerminalWindow from "./components/TerminalWindow"
 import { getSkillsList } from "@/lib/data"
 import BootAnimation from "@/app/components/BootAnimation"
+import SampleWindow from "./components/SampleWindow"
 
 const initialIcons = [
   { id: "about", name: "About Me", icon: User, gridX: 0, gridY: 0 },
@@ -23,6 +24,7 @@ const initialIcons = [
   { id: "writing-samples", name: "Writing Samples", icon: FileText, gridX: 0, gridY: 3 },
   { id: "contact", name: "Contact", icon: Mail, gridX: 0, gridY: 4 },
   { id: "gallery", name: "Gallery", icon: ImageIcon, gridX: 0, gridY: 5 },
+  { id: "sample", name: "Sample", icon: Folder, gridX: 1, gridY: 2 },
   { id: "recycle-bin", name: "Recycle Bin", icon: Trash2, gridX: 1, gridY: 1 },
 ]
 
@@ -1421,6 +1423,9 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
     case "terminal":
       return <TerminalWindow />
 
+    case "sample":
+      return <SampleWindow />
+
     default:
       return (
         <div className="text-white text-center py-12">
@@ -2050,7 +2055,7 @@ export default function VistaDesktop() {
                 initialX={win.x}
                 initialY={win.y}
               >
-                <div className={win.id === "flappy-bird-game" || win.id === "terminal" || win.id === "browser" ? "h-full" : "p-8"}>
+                <div className={win.id === "flappy-bird-game" || win.id === "terminal" || win.id === "browser" || win.id === "sample" ? "h-full" : "p-8"}>
                   <WindowContent 
                     windowId={win.id} 
                     onWallpaperChange={changeWallpaper} 

@@ -11,6 +11,142 @@ A Windows Vista-inspired portfolio website built with Next.js, featuring a nosta
 - **Taskbar** with window management and system controls
 - **Dynamic wallpapers** with animated gradients
 
+### 📁 **File Navigator Style Windows**
+The site includes a sophisticated file navigator window (Sample window) that emulates a Mac Finder-style interface with Vista/Aero styling. This pattern can be reused to create similar content browsers.
+
+#### **Structure Overview:**
+```
+┌─────────────────────────────────────────────────────────┐
+│ Sample (Window Title Bar - handled by VistaWindow)     │
+├─────────────┬───────────────────────────────────────────┤
+│ Project     │ File Header (name, size, modified)       │
+│ Files       ├───────────────────────────────────────────┤
+│ ├─ All      │                                           │
+│ │  ├─ File1 │ Content Area (scrollable)                 │
+│ │  └─ File2 │                                           │
+│ └─ Text     │                                           │
+│    └─ File3 │                                           │
+└─────────────┴───────────────────────────────────────────┘
+```
+
+#### **Key Components:**
+
+1. **Sidebar Navigation** (`w-64` width):
+   - **Category Headers**: Expandable/collapsible file type groups
+   - **File Lists**: Individual files within each category
+   - **Visual Hierarchy**: Indentation with `border-l border-white/10`
+   - **Selection States**: Subtle highlighting with blue accent borders
+
+2. **Content Area** (flexible width):
+   - **File Header**: Shows selected file info (name, size, date)
+   - **Content Viewer**: Scrollable area for file content
+   - **Responsive Layout**: Adapts to window resizing
+
+#### **Data Structure:**
+```typescript
+interface FileItem {
+  id: string
+  name: string
+  type: 'text' | 'image' | 'code' | 'video' | 'audio' | 'archive' | 'spreadsheet' | 'presentation' | 'pdf' | 'unknown'
+  content?: string
+  imageSrc?: string
+  size?: string
+  modified?: string
+}
+
+interface FileType {
+  id: string
+  name: string
+  icon: React.ComponentType<any>
+  color: string
+  files: FileItem[]
+}
+```
+
+#### **State Management:**
+```typescript
+const [selectedFileType, setSelectedFileType] = useState<string>('all')
+const [selectedFile, setSelectedFile] = useState<FileItem | null>(null)
+const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(['all']))
+```
+
+#### **Vista/Aero Styling Features:**
+- **Glass Morphism**: `bg-white/10 backdrop-blur-sm aero-glass`
+- **Subtle Selection**: `bg-white/12 border-r-2 border-blue-400/60`
+- **Hover Effects**: `hover:bg-white/8 transition-all duration-200`
+- **Scrollbars**: `scrollbar-thin scrollbar-thumb-white/20`
+- **Typography**: `prose-invert` for dark theme content
+
+#### **Creating New File Navigator Windows:**
+
+1. **Create Component Structure:**
+   ```typescript
+   const NewNavigatorWindow: React.FC = () => {
+     // State management
+     const [selectedFileType, setSelectedFileType] = useState<string>('all')
+     const [selectedFile, setSelectedFile] = useState<FileItem | null>(null)
+     const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(['all']))
+
+     // Data structure
+     const fileTypes: FileType[] = [
+       {
+         id: 'all',
+         name: 'All Items',
+         icon: Folder,
+         color: 'text-blue-400',
+         files: [/* your files */]
+       }
+     ]
+
+     return (
+       <div className="w-full h-full flex bg-white/10 backdrop-blur-sm text-white/90 overflow-hidden aero-glass">
+         {/* Sidebar */}
+         <div className="w-64 bg-white/5 border-r border-white/20 flex flex-col">
+           {/* Navigation content */}
+         </div>
+         
+         {/* Content Area */}
+         <div className="flex-1 flex flex-col">
+           {/* File content */}
+         </div>
+       </div>
+     )
+   }
+   ```
+
+2. **Add to Main Page:**
+   ```typescript
+   // In app/page.tsx WindowContent component
+   case "new-navigator":
+     return <NewNavigatorWindow />
+   ```
+
+3. **Add Desktop Icon:**
+   ```typescript
+   // In initialIcons array
+   {
+     id: "new-navigator",
+     name: "New Navigator",
+     icon: "📁",
+     gridX: 2,
+     gridY: 2,
+     windowId: "new-navigator"
+   }
+   ```
+
+#### **Customization Options:**
+- **File Types**: Add new file type categories with custom icons
+- **Content Rendering**: Customize `renderFileContent()` for different file types
+- **Styling**: Modify colors, spacing, and effects to match your theme
+- **Functionality**: Add search, filtering, or sorting capabilities
+
+#### **Best Practices:**
+- **Consistent Spacing**: Use `px-4 py-2.5` for buttons, `space-x-3` for elements
+- **Smooth Transitions**: Always include `transition-all duration-200`
+- **Visual Feedback**: Use subtle borders and shadows for selection states
+- **Accessibility**: Ensure proper contrast and keyboard navigation
+- **Responsive Design**: Test with different window sizes
+
 ### 📱 **Social Media Integration**
 - **Dynamic social media grid** with staggered animations
 - **Interactive social cards** with hover effects and particle animations
