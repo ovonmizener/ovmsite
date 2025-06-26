@@ -22,7 +22,11 @@ interface FileType {
   files: FileItem[]
 }
 
-const SampleWindow: React.FC = () => {
+interface SampleWindowProps {
+  onOpenWindow?: (windowId: string) => void
+}
+
+const SampleWindow: React.FC<SampleWindowProps> = ({ onOpenWindow }) => {
   const [selectedFileType, setSelectedFileType] = useState<string>('all')
   const [selectedFile, setSelectedFile] = useState<FileItem | null>(null)
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(['all']))
@@ -36,22 +40,78 @@ const SampleWindow: React.FC = () => {
       files: [
         {
           id: 'music-sentiment',
-          name: 'Sonic Sentiments – Music Sentiment Analyzer',
+          name: 'Machine Learning - Music Lyric Sentiment Analysis Tool',
           type: 'text',
-          content: `# Sonic Sentiments – Music Sentiment Analyzer
+          content: `# Machine Learning - Music Lyric Sentiment Analysis Tool
 
 ## Project Overview
-For my data analytics bootcamp capstone, I built Sonic Sentiments, a web app that analyzes song lyrics for sentiment and genre. Using a Spotify dataset, I cleaned and preprocessed data, applied NLP techniques with TextBlob and TF-IDF, and trained models like logistic regression and Random Forest to predict sentiment and musical features.
+The Music Sentiment Analyzer is a web-based tool designed to analyze and visualize musical trends through sentiment and genre analysis. The project leverages a curated music dataset (up to 2019) as its data source. We preprocess the raw data, perform sentiment and genre analysis using machine learning techniques, and provide interactive visualizations using a dashboard. In addition, the tool includes a front-end application where users can submit lyrics to receive real-time sentiment feedback.
 
-## What I Built & Learned
-I developed the data pipeline in Python, handled NLP and model training with scikit-learn, and created a Flask backend with a user-friendly Dash dashboard to visualize trends and user inputs. The project combined data cleaning, modeling, and deployment into a seamless app.
+## Features
+**Data Processing Pipeline:**
+- Extracts key information including the release year directly from the dataset
+- Cleans and standardizes raw text data
 
-## Real-World Application
-This experience reflects the full data analytics workflow, from raw data to interactive insights, applicable to customer feedback analysis, internal tools, or any project needing clear, data-driven storytelling.
+**Sentiment & Genre Analysis:**
+- Uses pre-computed sentiment scores and machine learning models on the lyrics
+- Visualizes average sentiment scores by genre, correlations among numeric features, and more
+
+**Interactive Dashboard:**
+- Built using Dash and Plotly with multiple tabs: Overview, Numeric Analysis, Thematic Analysis, Track Info, and User Responses
+- Integrates real-time user submissions from a separate Flask application
+
+**User Submission Interface:**
+- A Flask-based front end allows users to input lyrics
+- Inputs are processed, stored in an SQLite database, and reflected on the dashboard, providing dynamic insights
+
+## Tech Stack
+**Programming Language:** Python 3.8+
+
+**Libraries & Frameworks:**
+- **Data Processing:** Pandas, NumPy
+- **Visualization:** Plotly, Dash
+- **Machine Learning & NLP:** scikit-learn, TextBlob
+- **Web Application:** Flask, Dash
+- **Database:** SQLite
+- **Styles & Assets:** Custom CSS located in the "assets" folder
+
+## Data Sources
+**Primary Dataset:**
+- Spotify dataset sourced from Mendeley Data containing song metadata and lyrics (up to 2019)
+
+**Supplementary Data:**
+- User-submitted lyrics are stored in a local SQLite database ("submissions_log.db")
+
+## Process & Workflow
+**Data Collection & Cleaning:**
+- Gather the Spotify dataset and preprocess it using Python
+- Convert the release_date column (which contains only the year) to integers
+- Remove unwanted characters and standardize the text in the lyrics
+
+**Feature Analysis & Prediction:**
+- Implemented a proof-of-concept feature predictor that attempts to predict musical features from lyrics
+- Uses TF-IDF vectorization and Random Forest Regression to predict: Danceability, Loudness, Acousticness, Instrumentalness, Valence, Energy
+- Note: This is a proof-of-concept implementation with limited accuracy (R² scores around 0.15)
+
+**Baseline Sentiment Analysis (Primary Graded Component):**
+- Implemented a robust sentiment analysis model achieving approximately 87% accuracy
+- Uses TextBlob for initial sentiment scoring and Logistic Regression for classification
+- This is the primary model chosen for grading, demonstrating strong performance in predicting sentiment from lyrics
+- The model is trained on a large dataset of song lyrics and their associated sentiment scores, making it particularly effective for musical content
+
+**Visualization & Dashboard Deployment:**
+- Pre-compute static figures (e.g., average sentiment by genre; scatter plot for release year vs. sentiment)
+- Build an interactive dashboard with multiple tabs
+- Integrate a Flask user submission interface to capture additional lyric data dynamically
 
 ## GitHub Repository
-https://github.com/ovonmizener/project4-databootcamp`,
-          size: '3.2 KB',
+https://github.com/ovonmizener/project4-databootcamp
+
+## Future Enhancements
+- Integrate professional APIs and additional datasets to expand the analysis scope
+- Explore advanced deep learning techniques for nuanced sentiment and genre classification
+- Improve dashboard interactivity and scalability for real-world applications`,
+          size: '4.8 KB',
           modified: '2024-01-15'
         },
         {
@@ -148,154 +208,117 @@ This project showcases my ability to blend different design paradigms and create
           modified: '2024-01-12'
         },
         {
-          id: 'joypop',
-          name: 'JoyPop Boba Cafe',
+          id: 'asu-bootcamp',
+          name: 'Deep Learning Investment Prediction Tool',
           type: 'text',
-          content: `# JoyPop Boba Cafe
+          content: `# Deep Learning Investment Prediction Tool
 
-## About JoyPop Boba Cafe
-I started JoyPop out of a love for community and boba culture. What began with a quirky little Suzuki JoyPop Every van has since grown into a full-service boba cafe and mobile catering business. I wanted to build something that felt fun, high-quality, and a little unexpected—something that brought people together through great drinks and shared experiences. Now based in Mesa, Arizona, JoyPop continues to reflect that original spark of creativity and joy.
+## Overview
+The purpose of this project is to create and optimize a deep learning model to predict whether organizations funded by Alphabet Soup will be successful. The model leverages a dataset containing metadata about more than 34,000 organizations to create a binary classifier. In this repository, you will find Jupyter/Colab notebooks with code for data preprocessing, model building, optimization, and evaluation, along with a comprehensive report on our analysis.
 
-## Services: In-Store & Mobile
-At our cafe, guests can enjoy handcrafted boba drinks in a cozy, welcoming space. We also specialize in mobile boba catering for events of all kinds—weddings, birthdays, corporate gatherings, and more. Our services are fully customizable, with options ranging from full-service boba bars to self-serve stations and bottled drinks. I also offer private tasting sessions to help clients craft the perfect signature drink for their event.
+## Repository Structure
+- **AlphabetSoupCharity.ipynb** – Notebook with the initial model and data preprocessing steps
+- **AlphabetSoupCharity_Optimization.ipynb** – Notebook containing advanced feature engineering, model optimization, and evaluation
+- **AlphabetSoupCharity_Optimization.h5** – Saved deep learning model
+- **training_curves.png** – Image showing the training and validation accuracy curves
+- **loss_accuracy_curves.png** – Image showing the loss curves over epochs
+- **README.txt** – Document describing the analysis and results
 
-## Location & Contact
-You can find JoyPop inside The Enclave Salon Suites at 4936 S Power Rd #120, Mesa, AZ 85212. For event bookings or questions, I'm always happy to connect—just reach out at (480) 420‑4758 or email me at oliver@joypop.jp.
+## Report on the Neural Network Model
 
-## Business Details
-- **Role**: Founder & Owner
-- **Location**: Mesa, Arizona
-- **Status**: Active
-- **Founded**: 2023
-- **Website**: https://joypop.jp/
+### Overview of the Analysis
+The goal of this analysis is to develop a robust binary classifier that predicts whether an organization will be successful if funded by Alphabet Soup. We approach this by:
+- Preprocessing the data to extract useful features
+- Engineering and selecting features to reduce noise
+- Designing and optimizing a deep neural network
+- Comparing the deep learning model with alternative models, such as Gradient Boosting
 
-## Contact Information
-- **Phone**: (480) 420-4758
-- **Email**: oliver@joypop.jp
-- **Address**: 4936 S Power Rd #120, Mesa, AZ 85212`,
-          size: '1.8 KB',
-          modified: '2024-01-11'
-        }
-      ]
-    },
-    {
-      id: 'text',
-      name: 'Documentation',
-      icon: FileText,
-      color: 'text-green-400',
-      files: [
-        {
-          id: 'music-sentiment',
-          name: 'Sonic Sentiments – Music Sentiment Analyzer',
-          type: 'text',
-          content: `# Sonic Sentiments – Music Sentiment Analyzer
+### Results
 
-## Project Overview
-For my data analytics bootcamp capstone, I built Sonic Sentiments, a web app that analyzes song lyrics for sentiment and genre. Using a Spotify dataset, I cleaned and preprocessed data, applied NLP techniques with TextBlob and TF-IDF, and trained models like logistic regression and Random Forest to predict sentiment and musical features.
+#### Data Preprocessing
+**Target Variable:**
+- **IS_SUCCESSFUL**: Indicates if the organization's funding was used effectively
 
-## What I Built & Learned
-I developed the data pipeline in Python, handled NLP and model training with scikit-learn, and created a Flask backend with a user-friendly Dash dashboard to visualize trends and user inputs. The project combined data cleaning, modeling, and deployment into a seamless app.
+**Feature Variables:**
+- All variables in the dataset except for key identifier columns and the target (e.g., APPLICATION_TYPE, AFFILIATION, CLASSIFICATION, USE_CASE, ORGANIZATION, STATUS, INCOME_AMT, SPECIAL_CONSIDERATIONS, ASK_AMT, etc.)
 
-## Real-World Application
-This experience reflects the full data analytics workflow, from raw data to interactive insights, applicable to customer feedback analysis, internal tools, or any project needing clear, data-driven storytelling.
+**Variables Removed:**
+- **EIN** and **NAME** were dropped since they serve only as identifiers and offer no predictive value
+
+#### Compiling, Training, and Evaluating the Model
+
+**Network Architecture:**
+- **Input Layer**: Matches the number of preprocessed, scaled features after feature selection
+- **Hidden Layers**:
+  - First hidden layer: 256 neurons with "swish" activation, followed by Batch Normalization and a Dropout of 10%
+  - Second hidden layer: 128 neurons with "swish" activation, followed by Batch Normalization and a Dropout of 10%
+  - Third hidden layer: 64 neurons with "swish" activation, followed by Batch Normalization
+- **Output Layer**: 1 neuron with "sigmoid" activation for binary classification
+
+**Training Details:**
+- The model was compiled using the Adam optimizer with a learning rate of 0.0005 and trained with a batch size of 16 for up to 100 epochs
+- Callbacks (ReduceLROnPlateau, EarlyStopping, and ModelCheckpoint) were implemented to ensure proper convergence and prevent overfitting
+
+**Target Model Performance:**
+- The deep learning model achieved a maximum accuracy of approximately 72%
+
+#### Steps Taken to Improve Performance:
+- **Feature Engineering**: Grouping rare categories, one-hot encoding, and feature selection via Random Forest importance
+- **Network Optimization**: Adjusting architecture (by increasing neurons and layers), changing activation functions to "swish", using Batch Normalization, and optimizing dropout rates
+- **Training Adjustments**: Tuning the learning rate, employing callbacks, and experimenting with epoch count and batch size
+
+**Supporting Images:**
+- Curves from learning: Training History
+
+## Summary
+
+### Overall Results
+Despite extensive tuning and optimization, our deep learning model plateaued at about 72% accuracy. This suggests that the predictive signal in the provided features may be inherently limited.
+
+### Recommendation for Alternative Models
+Given the performance ceiling of our neural network, I recommend exploring tree-based models such as Gradient Boosting (e.g., XGBoost or LightGBM). These models are well-suited for structured, tabular data and often outperform deep learning approaches when the dataset is noisy or has limited features. Preliminary experiments with gradient boosting in our project showed comparable performance, which may be further improved through additional modifications, however this is currently beyond my education on the subject matter.
+
+## Conclusion
+This project illustrates a comprehensive approach to solving a real-world classification problem using deep learning. While our optimized neural network could not exceed 72% accuracy, this limitation appears to be due to the dataset characteristics rather than flaws in our method. From my research, alternative techniques like Gradient Boosting are likely to provide better results for this type of problem, and further research could involve merging or ensembling these models for enhanced performance. However for the context of this project, I attempted to improve results ~5 times, and could not break past the 72% barrier.
+
+## Instructions to Run the Project
+
+1. **Clone the Repository:**
+   \`\`\`bash
+   git clone https://github.com/ovonmizener/deep-learning-challenge
+   cd deep-learning-challenge
+   \`\`\`
+
+2. **Open Notebooks:**
+   - Open AlphabetSoupCharity.ipynb or AlphabetSoupCharity_Optimization.ipynb in Google Colab/VS Code (as hardware allows)
+
+3. **Ensure Dependencies are Installed:**
+   - Check the notebook cells for any pip install commands (e.g., !pip install xgboost if using ensemble techniques)
+
+4. **Run the Entire Pipeline:**
+   - Execute data preprocessing, model training, and evaluation
 
 ## GitHub Repository
-https://github.com/ovonmizener/project4-databootcamp`,
+https://github.com/ovonmizener/deep-learning-challenge`,
           size: '3.2 KB',
-          modified: '2024-01-15'
+          modified: '2024-01-10'
         },
         {
-          id: 'ipodfiller',
-          name: 'ipodfiller App',
+          id: 'coming-soon',
+          name: 'Coming Soon',
           type: 'text',
-          content: `# ipodfiller App
+          content: `# Coming Soon
 
-## Project Description
-A modern desktop app to download and organize music from public Spotify playlists, with full metadata, for use on classic iPods and other devices.
+## Future Projects
+More exciting projects are in development and will be added here soon.
 
-## Features
-- Download music from public Spotify playlists
-- Full metadata preservation
-- Classic iPod compatibility
-- Desktop application interface
-- Music organization tools
-
-## Technology Stack
-- Desktop application framework
-- Spotify API integration
-- Music file processing
-- Metadata management
-
-## GitHub Repository
-https://github.com/ovonmizener/ipodfiller
+## What's Next
+Stay tuned for updates on new projects, collaborations, and developments.
 
 ## Status
-More information coming soon!`,
-          size: '2.8 KB',
-          modified: '2024-01-14'
-        },
-        {
-          id: 'portfolio',
-          name: 'This Website – Portfolio Project',
-          type: 'text',
-          content: `# This Website – Portfolio Project
-
-## Ethos & Inspiration
-This site is a love letter to the **Frutiger Aero** aesthetic—think glassy surfaces, playful gradients, and a sense of digital optimism. I wanted to create a portfolio that felt like a desktop OS from a parallel universe: interactive, fun, and a little nostalgic, but with modern web tech under the hood.
-
-## Tech Stack
-- **Next.js** (App Router, SSR, API routes)
-- **React** (component-driven UI)
-- **Tailwind CSS** (utility-first styling, custom themes)
-- **Framer Motion** (animations, drag & drop)
-- **TypeScript** (type safety everywhere)
-- **Prisma** (future-proofed for backend/data)
-
-## Features
-- Draggable, resizable windows (like a real OS)
-- Animated taskbar, start orb, and desktop icons
-- Vista/Aero glass effects and gradients
-- Interactive project windows
-- Responsive design with mobile considerations
-- Boot animation and welcome screen
-- Konami code easter egg
-
-## Design Philosophy
-The goal was to create something that feels both nostalgic and modern, combining the playful optimism of Windows Vista's design language with contemporary web development practices. Every interaction should feel smooth and delightful, just like using a well-designed operating system.
-
-## Development Notes
-This project showcases my ability to blend different design paradigms and create cohesive, interactive experiences. The Vista aesthetic isn't just visual—it's functional, with windows that behave like real desktop applications.`,
-          size: '2.1 KB',
-          modified: '2024-01-12'
-        },
-        {
-          id: 'joypop',
-          name: 'JoyPop Boba Cafe',
-          type: 'text',
-          content: `# JoyPop Boba Cafe
-
-## About JoyPop Boba Cafe
-I started JoyPop out of a love for community and boba culture. What began with a quirky little Suzuki JoyPop Every van has since grown into a full-service boba cafe and mobile catering business. I wanted to build something that felt fun, high-quality, and a little unexpected—something that brought people together through great drinks and shared experiences. Now based in Mesa, Arizona, JoyPop continues to reflect that original spark of creativity and joy.
-
-## Services: In-Store & Mobile
-At our cafe, guests can enjoy handcrafted boba drinks in a cozy, welcoming space. We also specialize in mobile boba catering for events of all kinds—weddings, birthdays, corporate gatherings, and more. Our services are fully customizable, with options ranging from full-service boba bars to self-serve stations and bottled drinks. I also offer private tasting sessions to help clients craft the perfect signature drink for their event.
-
-## Location & Contact
-You can find JoyPop inside The Enclave Salon Suites at 4936 S Power Rd #120, Mesa, AZ 85212. For event bookings or questions, I'm always happy to connect—just reach out at (480) 420‑4758 or email me at oliver@joypop.jp.
-
-## Business Details
-- **Role**: Founder & Owner
-- **Location**: Mesa, Arizona
-- **Status**: Active
-- **Founded**: 2023
-- **Website**: https://joypop.jp/
-
-## Contact Information
-- **Phone**: (480) 420-4758
-- **Email**: oliver@joypop.jp
-- **Address**: 4936 S Power Rd #120, Mesa, AZ 85212`,
-          size: '1.8 KB',
-          modified: '2024-01-11'
+In development`,
+          size: '0.8 KB',
+          modified: '2024-01-09'
         }
       ]
     },
@@ -333,59 +356,40 @@ https://github.com/ovonmizener/chattinogame
 The game is available to play directly in the browser through the original project window.`,
           size: '2.1 KB',
           modified: '2024-01-13'
-        }
-      ]
-    },
-    {
-      id: 'image',
-      name: 'Screenshots',
-      icon: ImageIcon,
-      color: 'text-purple-400',
-      files: [
+        },
         {
-          id: 'ipodfiller-screenshot',
-          name: 'ipodfiller-screenshot.png',
-          type: 'image',
-          imageSrc: '/images/ipodfiller-screenshot.png',
-          size: '156 KB',
-          modified: '2024-01-14'
-        }
-      ]
-    },
-    {
-      id: 'presentation',
-      name: 'Business Projects',
-      icon: Presentation,
-      color: 'text-orange-400',
-      files: [
-        {
-          id: 'joypop',
-          name: 'JoyPop Boba Cafe',
+          id: 'asu-bootcamp',
+          name: 'ASU Data Analytics Boot Camp',
           type: 'text',
-          content: `# JoyPop Boba Cafe
+          content: `# ASU Data Analytics Boot Camp
 
-## About JoyPop Boba Cafe
-I started JoyPop out of a love for community and boba culture. What began with a quirky little Suzuki JoyPop Every van has since grown into a full-service boba cafe and mobile catering business. I wanted to build something that felt fun, high-quality, and a little unexpected—something that brought people together through great drinks and shared experiences. Now based in Mesa, Arizona, JoyPop continues to reflect that original spark of creativity and joy.
+## Project Overview
+Deep learning challenge project from the ASU Data Analytics Boot Camp. This project focused on advanced data analysis and deep learning techniques.
 
-## Services: In-Store & Mobile
-At our cafe, guests can enjoy handcrafted boba drinks in a cozy, welcoming space. We also specialize in mobile boba catering for events of all kinds—weddings, birthdays, corporate gatherings, and more. Our services are fully customizable, with options ranging from full-service boba bars to self-serve stations and bottled drinks. I also offer private tasting sessions to help clients craft the perfect signature drink for their event.
+## GitHub Repository
+https://github.com/ovonmizener/deep-learning-challenge
 
-## Location & Contact
-You can find JoyPop inside The Enclave Salon Suites at 4936 S Power Rd #120, Mesa, AZ 85212. For event bookings or questions, I'm always happy to connect—just reach out at (480) 420‑4758 or email me at oliver@joypop.jp.
+## Status
+More details coming soon!`,
+          size: '1.5 KB',
+          modified: '2024-01-10'
+        },
+        {
+          id: 'coming-soon',
+          name: 'Coming Soon',
+          type: 'text',
+          content: `# Coming Soon
 
-## Business Details
-- **Role**: Founder & Owner
-- **Location**: Mesa, Arizona
-- **Status**: Active
-- **Founded**: 2023
-- **Website**: https://joypop.jp/
+## Future Projects
+More exciting projects are in development and will be added here soon.
 
-## Contact Information
-- **Phone**: (480) 420-4758
-- **Email**: oliver@joypop.jp
-- **Address**: 4936 S Power Rd #120, Mesa, AZ 85212`,
-          size: '1.8 KB',
-          modified: '2024-01-11'
+## What's Next
+Stay tuned for updates on new projects, collaborations, and developments.
+
+## Status
+In development`,
+          size: '0.8 KB',
+          modified: '2024-01-09'
         }
       ]
     }
@@ -452,7 +456,7 @@ You can find JoyPop inside The Enclave Salon Suites at 4936 S Power Rd #120, Mes
           return (
             <div className="space-y-6">
               {/* GitHub Link at the Top */}
-              <div className="pb-2">
+              <div className="pb-2 flex justify-center">
                 <a 
                   href="https://github.com/ovonmizener/project4-databootcamp" 
                   target="_blank" 
@@ -468,17 +472,121 @@ You can find JoyPop inside The Enclave Salon Suites at 4936 S Power Rd #120, Mes
               {/* Project Overview */}
               <div className="bg-white/5 border-l-4 border-blue-400 rounded-lg p-6">
                 <h3 className="text-xl font-semibold mb-2 text-blue-200">Project Overview</h3>
-                <p className="text-white/80 mb-2">For my data analytics bootcamp capstone, I built Sonic Sentiments, a web app that analyzes song lyrics for sentiment and genre. Using a Spotify dataset, I cleaned and preprocessed data, applied NLP techniques with TextBlob and TF-IDF, and trained models like logistic regression and Random Forest to predict sentiment and musical features.</p>
+                <p className="text-white/80 mb-2">The Music Sentiment Analyzer is a web-based tool designed to analyze and visualize musical trends through sentiment and genre analysis. The project leverages a curated music dataset (up to 2019) as its data source. We preprocess the raw data, perform sentiment and genre analysis using machine learning techniques, and provide interactive visualizations using a dashboard. In addition, the tool includes a front-end application where users can submit lyrics to receive real-time sentiment feedback.</p>
               </div>
-              {/* What I Built & Learned */}
+              {/* Features */}
               <div className="bg-white/5 border-l-4 border-green-400 rounded-lg p-6">
-                <h3 className="text-xl font-semibold mb-2 text-green-200">What I Built & Learned</h3>
-                <p className="text-white/80 mb-2">I developed the data pipeline in Python, handled NLP and model training with scikit-learn, and created a Flask backend with a user-friendly Dash dashboard to visualize trends and user inputs. The project combined data cleaning, modeling, and deployment into a seamless app.</p>
+                <h3 className="text-xl font-semibold mb-2 text-green-200">Features</h3>
+                <div className="space-y-3 text-white/80">
+                  <div>
+                    <span className="font-medium text-green-200">Data Processing Pipeline:</span>
+                    <ul className="mt-1 ml-4 space-y-1">
+                      <li>• Extracts key information including the release year directly from the dataset</li>
+                      <li>• Cleans and standardizes raw text data</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <span className="font-medium text-green-200">Sentiment & Genre Analysis:</span>
+                    <ul className="mt-1 ml-4 space-y-1">
+                      <li>• Uses pre-computed sentiment scores and machine learning models on the lyrics</li>
+                      <li>• Visualizes average sentiment scores by genre, correlations among numeric features, and more</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <span className="font-medium text-green-200">Interactive Dashboard:</span>
+                    <ul className="mt-1 ml-4 space-y-1">
+                      <li>• Built using Dash and Plotly with multiple tabs: Overview, Numeric Analysis, Thematic Analysis, Track Info, and User Responses</li>
+                      <li>• Integrates real-time user submissions from a separate Flask application</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <span className="font-medium text-green-200">User Submission Interface:</span>
+                    <ul className="mt-1 ml-4 space-y-1">
+                      <li>• A Flask-based front end allows users to input lyrics</li>
+                      <li>• Inputs are processed, stored in an SQLite database, and reflected on the dashboard, providing dynamic insights</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
-              {/* Real-World Application */}
+              {/* Tech Stack */}
+              <div className="bg-white/5 border-l-4 border-purple-400 rounded-lg p-6">
+                <h3 className="text-xl font-semibold mb-2 text-purple-200">Tech Stack</h3>
+                <div className="space-y-2 text-white/80">
+                  <div><span className="font-medium text-purple-200">Programming Language:</span> Python 3.8+</div>
+                  <div className="mt-2">
+                    <span className="font-medium text-purple-200">Libraries & Frameworks:</span>
+                    <ul className="mt-1 ml-4 space-y-1">
+                      <li>• <strong>Data Processing:</strong> Pandas, NumPy</li>
+                      <li>• <strong>Visualization:</strong> Plotly, Dash</li>
+                      <li>• <strong>Machine Learning & NLP:</strong> scikit-learn, TextBlob</li>
+                      <li>• <strong>Web Application:</strong> Flask, Dash</li>
+                      <li>• <strong>Database:</strong> SQLite</li>
+                      <li>• <strong>Styles & Assets:</strong> Custom CSS located in the "assets" folder</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              {/* Data Sources */}
+              <div className="bg-white/5 border-l-4 border-cyan-400 rounded-lg p-6">
+                <h3 className="text-xl font-semibold mb-2 text-cyan-200">Data Sources</h3>
+                <div className="space-y-2 text-white/80">
+                  <div>
+                    <span className="font-medium text-cyan-200">Primary Dataset:</span>
+                    <p className="mt-1 ml-4">Spotify dataset sourced from Mendeley Data containing song metadata and lyrics (up to 2019)</p>
+                  </div>
+                  <div>
+                    <span className="font-medium text-cyan-200">Supplementary Data:</span>
+                    <p className="mt-1 ml-4">User-submitted lyrics are stored in a local SQLite database ("submissions_log.db")</p>
+                  </div>
+                </div>
+              </div>
+              {/* Process & Workflow */}
               <div className="bg-white/5 border-l-4 border-yellow-400 rounded-lg p-6">
-                <h3 className="text-xl font-semibold mb-2 text-yellow-200">How This Applies to Real-World Projects</h3>
-                <p className="text-white/80">This experience reflects the full data analytics workflow, from raw data to interactive insights, applicable to customer feedback analysis, internal tools, or any project needing clear, data-driven storytelling.</p>
+                <h3 className="text-xl font-semibold mb-2 text-yellow-200">Process & Workflow</h3>
+                <div className="space-y-3 text-white/80">
+                  <div>
+                    <span className="font-medium text-yellow-200">Data Collection & Cleaning:</span>
+                    <ul className="mt-1 ml-4 space-y-1">
+                      <li>• Gather the Spotify dataset and preprocess it using Python</li>
+                      <li>• Convert the release_date column (which contains only the year) to integers</li>
+                      <li>• Remove unwanted characters and standardize the text in the lyrics</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <span className="font-medium text-yellow-200">Feature Analysis & Prediction:</span>
+                    <ul className="mt-1 ml-4 space-y-1">
+                      <li>• Implemented a proof-of-concept feature predictor that attempts to predict musical features from lyrics</li>
+                      <li>• Uses TF-IDF vectorization and Random Forest Regression to predict: Danceability, Loudness, Acousticness, Instrumentalness, Valence, Energy</li>
+                      <li>• Note: This is a proof-of-concept implementation with limited accuracy (R² scores around 0.15)</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <span className="font-medium text-yellow-200">Baseline Sentiment Analysis (Primary Graded Component):</span>
+                    <ul className="mt-1 ml-4 space-y-1">
+                      <li>• Implemented a robust sentiment analysis model achieving approximately 87% accuracy</li>
+                      <li>• Uses TextBlob for initial sentiment scoring and Logistic Regression for classification</li>
+                      <li>• This is the primary model chosen for grading, demonstrating strong performance in predicting sentiment from lyrics</li>
+                      <li>• The model is trained on a large dataset of song lyrics and their associated sentiment scores, making it particularly effective for musical content</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <span className="font-medium text-yellow-200">Visualization & Dashboard Deployment:</span>
+                    <ul className="mt-1 ml-4 space-y-1">
+                      <li>• Pre-compute static figures (e.g., average sentiment by genre; scatter plot for release year vs. sentiment)</li>
+                      <li>• Build an interactive dashboard with multiple tabs</li>
+                      <li>• Integrate a Flask user submission interface to capture additional lyric data dynamically</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              {/* Future Enhancements */}
+              <div className="bg-white/5 border-l-4 border-orange-400 rounded-lg p-6">
+                <h3 className="text-xl font-semibold mb-2 text-orange-200">Future Enhancements</h3>
+                <ul className="text-white/80 space-y-1">
+                  <li>• Integrate professional APIs and additional datasets to expand the analysis scope</li>
+                  <li>• Explore advanced deep learning techniques for nuanced sentiment and genre classification</li>
+                  <li>• Improve dashboard interactivity and scalability for real-world applications</li>
+                </ul>
               </div>
             </div>
           )
@@ -488,7 +596,7 @@ You can find JoyPop inside The Enclave Salon Suites at 4936 S Power Rd #120, Mes
           return (
             <div className="space-y-6">
               {/* GitHub Link */}
-              <div className="pb-2">
+              <div className="pb-2 flex justify-center">
                 <a 
                   href="https://github.com/ovonmizener/ipodfiller" 
                   target="_blank" 
@@ -506,31 +614,82 @@ You can find JoyPop inside The Enclave Salon Suites at 4936 S Power Rd #120, Mes
                 <h3 className="text-xl font-semibold mb-2 text-purple-200">Project Description</h3>
                 <p className="text-white/80 mb-4">A modern desktop app to download and organize music from public Spotify playlists, with full metadata, for use on classic iPods and other devices.</p>
               </div>
+              {/* Screenshot */}
+              <div className="bg-white/5 border-l-4 border-cyan-400 rounded-lg p-6">
+                <h3 className="text-xl font-semibold mb-4 text-cyan-200">Screenshot</h3>
+                <div className="relative w-full h-64 rounded-lg overflow-hidden">
+                  <Image
+                    src="/images/ipodfiller-screenshot.png"
+                    alt="ipodfiller App Screenshot"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              </div>
               {/* Features */}
               <div className="bg-white/5 border-l-4 border-green-400 rounded-lg p-6">
                 <h3 className="text-xl font-semibold mb-2 text-green-200">Features</h3>
                 <ul className="text-white/80 space-y-1">
-                  <li>• Download music from public Spotify playlists</li>
-                  <li>• Full metadata preservation</li>
-                  <li>• Classic iPod compatibility</li>
-                  <li>• Desktop application interface</li>
-                  <li>• Music organization tools</li>
+                  <li>• Download tracks from any public Spotify playlist</li>
+                  <li>• Automatic metadata embedding (title, artist, album, artwork)</li>
+                  <li>• Progress tracking and error handling</li>
+                  <li>• Standalone executable distribution (no Python required for end users)</li>
+                  <li>• In-app instructions and settings for Spotify API keys</li>
+                  <li>• Classic iPod compatibility with full metadata preservation</li>
                 </ul>
               </div>
               {/* Technology Stack */}
               <div className="bg-white/5 border-l-4 border-blue-400 rounded-lg p-6">
                 <h3 className="text-xl font-semibold mb-2 text-blue-200">Technology Stack</h3>
                 <ul className="text-white/80 space-y-1">
-                  <li>• Desktop application framework</li>
-                  <li>• Spotify API integration</li>
-                  <li>• Music file processing</li>
-                  <li>• Metadata management</li>
+                  <li>• <strong>Python 3.8+</strong> (core application)</li>
+                  <li>• <strong>CustomTkinter</strong> (GUI framework with Frutiger Aero styling)</li>
+                  <li>• <strong>Spotify Web API</strong> (playlist and track data)</li>
+                  <li>• <strong>FFmpeg</strong> (audio processing and conversion)</li>
+                  <li>• <strong>PyInstaller</strong> (standalone executable creation)</li>
+                  <li>• <strong>Metadata libraries</strong> (ID3 tags, album artwork)</li>
                 </ul>
               </div>
-              {/* Status */}
+              {/* Development & Usage */}
               <div className="bg-white/5 border-l-4 border-yellow-400 rounded-lg p-6">
-                <h3 className="text-xl font-semibold mb-2 text-yellow-200">Status</h3>
-                <p className="text-white/80">More information coming soon!</p>
+                <h3 className="text-xl font-semibold mb-2 text-yellow-200">Development & Usage</h3>
+                <div className="space-y-3 text-white/80">
+                  <div>
+                    <span className="font-medium text-yellow-200">For Developers:</span>
+                    <ul className="mt-1 ml-4 space-y-1">
+                      <li>• Clone repository and install dependencies with <code className="bg-white/10 px-1 rounded">pip install -r requirements.txt</code></li>
+                      <li>• Download FFmpeg and place <code className="bg-white/10 px-1 rounded">ffmpeg.exe</code> in project folder</li>
+                      <li>• Run with <code className="bg-white/10 px-1 rounded">python main.py</code></li>
+                      <li>• Build executable with <code className="bg-white/10 px-1 rounded">pyinstaller --onefile --windowed --add-binary "ffmpeg.exe;." main.py</code></li>
+                    </ul>
+                  </div>
+                  <div>
+                    <span className="font-medium text-yellow-200">For End Users:</span>
+                    <ul className="mt-1 ml-4 space-y-1">
+                      <li>• Standalone executable (no Python installation required)</li>
+                      <li>• Enter Spotify API credentials in app settings</li>
+                      <li>• Paste public Spotify playlist URL</li>
+                      <li>• Choose download directory and start download</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              {/* Important Notes */}
+              <div className="bg-white/5 border-l-4 border-orange-400 rounded-lg p-6">
+                <h3 className="text-xl font-semibold mb-2 text-orange-200">Important Notes</h3>
+                <ul className="text-white/80 space-y-1">
+                  <li>• Only public Spotify playlists are supported</li>
+                  <li>• You must use your own Spotify API credentials (get them at developer.spotify.com)</li>
+                  <li>• Downloaded files are MP3s with full metadata</li>
+                  <li>• Compiled .exe is NOT included in the repository</li>
+                  <li>• MIT License</li>
+                </ul>
+              </div>
+              {/* Disclaimer */}
+              <div className="bg-white/5 border-l-4 border-red-400 rounded-lg p-6">
+                <h3 className="text-xl font-semibold mb-2 text-red-200">Disclaimer</h3>
+                <p className="text-white/80 mb-2">This application is provided solely for personal use and for obtaining music that you have the legal rights to access. I do not condone, support, or promote music piracy in any form. The purpose of this tool is to help manage and organize music that you already own or have explicit permission to use.</p>
+                <p className="text-white/80">By using this application, you agree that it is your responsibility to comply with all applicable copyright laws and licensing agreements. Use it responsibly and ensure that you only download content for which you hold the necessary rights.</p>
               </div>
             </div>
           )
@@ -539,8 +698,8 @@ You can find JoyPop inside The Enclave Salon Suites at 4936 S Power Rd #120, Mes
         if (file.id === 'python-game') {
           return (
             <div className="space-y-6">
-              {/* GitHub Link */}
-              <div className="pb-2">
+              {/* GitHub Link and Play Game Button */}
+              <div className="pb-2 flex justify-center space-x-4">
                 <a 
                   href="https://github.com/ovonmizener/chattinogame" 
                   target="_blank" 
@@ -552,6 +711,17 @@ You can find JoyPop inside The Enclave Salon Suites at 4936 S Power Rd #120, Mes
                   </svg>
                   View on GitHub
                 </a>
+                {onOpenWindow && (
+                  <button 
+                    onClick={() => onOpenWindow("flappy-bird-game")}
+                    className="inline-flex items-center px-4 py-2 rounded-lg bg-green-500/20 hover:bg-green-500/30 transition-colors border border-green-500/30"
+                  >
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    🎮 Play Game
+                  </button>
+                )}
               </div>
               {/* Project Description */}
               <div className="bg-white/5 border-l-4 border-purple-400 rounded-lg p-6">
@@ -578,11 +748,6 @@ You can find JoyPop inside The Enclave Salon Suites at 4936 S Power Rd #120, Mes
                   <li>• Choose between Traditional and Continuous modes</li>
                 </ul>
               </div>
-              {/* Play Game Note */}
-              <div className="bg-white/5 border-l-4 border-yellow-400 rounded-lg p-6">
-                <h3 className="text-xl font-semibold mb-2 text-yellow-200">Play Game</h3>
-                <p className="text-white/80">The game is available to play directly in the browser through the original project window.</p>
-              </div>
             </div>
           )
         }
@@ -590,6 +755,20 @@ You can find JoyPop inside The Enclave Salon Suites at 4936 S Power Rd #120, Mes
         if (file.id === 'portfolio') {
           return (
             <div className="space-y-6">
+              {/* GitHub Link */}
+              <div className="pb-2 flex justify-center">
+                <a 
+                  href="https://github.com/ovonmizener/ovmsite" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-4 py-2 rounded-lg bg-blue-500/20 hover:bg-blue-500/40 transition-colors border border-blue-400"
+                >
+                  <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  </svg>
+                  View on GitHub
+                </a>
+              </div>
               {/* Ethos & Inspiration */}
               <div className="bg-white/5 border-l-4 border-purple-400 rounded-lg p-6">
                 <h3 className="text-xl font-semibold mb-2 text-purple-200">Ethos & Inspiration</h3>
@@ -634,52 +813,134 @@ You can find JoyPop inside The Enclave Salon Suites at 4936 S Power Rd #120, Mes
           )
         }
         
-        if (file.id === 'joypop') {
+        if (file.id === 'asu-bootcamp') {
           return (
             <div className="space-y-6">
-              {/* About JoyPop */}
-              <div className="bg-white/5 border-l-4 border-purple-400 rounded-lg p-6">
-                <h3 className="text-xl font-semibold mb-2 text-purple-200">About JoyPop Boba Cafe</h3>
-                <p className="text-white/80 mb-4">I started JoyPop out of a love for community and boba culture. What began with a quirky little Suzuki JoyPop Every van has since grown into a full-service boba cafe and mobile catering business. I wanted to build something that felt fun, high-quality, and a little unexpected—something that brought people together through great drinks and shared experiences. Now based in Mesa, Arizona, JoyPop continues to reflect that original spark of creativity and joy.</p>
+              {/* GitHub Link */}
+              <div className="pb-2 flex justify-center">
+                <a 
+                  href="https://github.com/ovonmizener/deep-learning-challenge" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-4 py-2 rounded-lg bg-blue-500/20 hover:bg-blue-500/40 transition-colors border border-blue-400"
+                >
+                  <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  </svg>
+                  View on GitHub
+                </a>
               </div>
-              {/* Services */}
-              <div className="bg-white/5 border-l-4 border-green-400 rounded-lg p-6">
-                <h3 className="text-xl font-semibold mb-2 text-green-200">Services: In-Store & Mobile</h3>
-                <p className="text-white/80 mb-4">At our cafe, guests can enjoy handcrafted boba drinks in a cozy, welcoming space. We also specialize in mobile boba catering for events of all kinds—weddings, birthdays, corporate gatherings, and more. Our services are fully customizable, with options ranging from full-service boba bars to self-serve stations and bottled drinks. I also offer private tasting sessions to help clients craft the perfect signature drink for their event.</p>
-              </div>
-              {/* Location & Contact */}
+              {/* Overview */}
               <div className="bg-white/5 border-l-4 border-blue-400 rounded-lg p-6">
-                <h3 className="text-xl font-semibold mb-2 text-blue-200">Location & Contact</h3>
-                <p className="text-white/80 mb-4">You can find JoyPop inside The Enclave Salon Suites at 4936 S Power Rd #120, Mesa, AZ 85212. For event bookings or questions, I'm always happy to connect—just reach out at (480) 420‑4758 or email me at oliver@joypop.jp.</p>
+                <h3 className="text-xl font-semibold mb-2 text-blue-200">Overview</h3>
+                <p className="text-white/80 mb-2">The purpose of this project is to create and optimize a deep learning model to predict whether organizations funded by Alphabet Soup will be successful. The model leverages a dataset containing metadata about more than 34,000 organizations to create a binary classifier. In this repository, you will find Jupyter/Colab notebooks with code for data preprocessing, model building, optimization, and evaluation, along with a comprehensive report on our analysis.</p>
               </div>
-              {/* Business Details */}
+              {/* Repository Structure */}
+              <div className="bg-white/5 border-l-4 border-green-400 rounded-lg p-6">
+                <h3 className="text-xl font-semibold mb-2 text-green-200">Repository Structure</h3>
+                <ul className="text-white/80 space-y-1">
+                  <li>• <strong>AlphabetSoupCharity.ipynb</strong> – Notebook with the initial model and data preprocessing steps</li>
+                  <li>• <strong>AlphabetSoupCharity_Optimization.ipynb</strong> – Notebook containing advanced feature engineering, model optimization, and evaluation</li>
+                  <li>• <strong>AlphabetSoupCharity_Optimization.h5</strong> – Saved deep learning model</li>
+                  <li>• <strong>training_curves.png</strong> – Image showing the training and validation accuracy curves</li>
+                  <li>• <strong>loss_accuracy_curves.png</strong> – Image showing the loss curves over epochs</li>
+                  <li>• <strong>README.txt</strong> – Document describing the analysis and results</li>
+                </ul>
+              </div>
+              {/* Network Architecture */}
+              <div className="bg-white/5 border-l-4 border-purple-400 rounded-lg p-6">
+                <h3 className="text-xl font-semibold mb-2 text-purple-200">Network Architecture</h3>
+                <div className="space-y-2 text-white/80">
+                  <div><span className="font-medium text-purple-200">Input Layer:</span> Matches the number of preprocessed, scaled features after feature selection</div>
+                  <div className="mt-2">
+                    <span className="font-medium text-purple-200">Hidden Layers:</span>
+                    <ul className="mt-1 ml-4 space-y-1">
+                      <li>• First hidden layer: 256 neurons with "swish" activation, followed by Batch Normalization and a Dropout of 10%</li>
+                      <li>• Second hidden layer: 128 neurons with "swish" activation, followed by Batch Normalization and a Dropout of 10%</li>
+                      <li>• Third hidden layer: 64 neurons with "swish" activation, followed by Batch Normalization</li>
+                    </ul>
+                  </div>
+                  <div><span className="font-medium text-purple-200">Output Layer:</span> 1 neuron with "sigmoid" activation for binary classification</div>
+                </div>
+              </div>
+              {/* Training Details */}
+              <div className="bg-white/5 border-l-4 border-cyan-400 rounded-lg p-6">
+                <h3 className="text-xl font-semibold mb-2 text-cyan-200">Training Details</h3>
+                <ul className="text-white/80 space-y-1">
+                  <li>• The model was compiled using the Adam optimizer with a learning rate of 0.0005</li>
+                  <li>• Trained with a batch size of 16 for up to 100 epochs</li>
+                  <li>• Callbacks (ReduceLROnPlateau, EarlyStopping, and ModelCheckpoint) were implemented to ensure proper convergence and prevent overfitting</li>
+                  <li>• <strong>Target Model Performance:</strong> The deep learning model achieved a maximum accuracy of approximately 72%</li>
+                </ul>
+              </div>
+              {/* Data Preprocessing */}
               <div className="bg-white/5 border-l-4 border-yellow-400 rounded-lg p-6">
-                <h3 className="text-xl font-semibold mb-2 text-yellow-200">Business Details</h3>
-                <div className="grid grid-cols-2 gap-4 text-white/80">
+                <h3 className="text-xl font-semibold mb-2 text-yellow-200">Data Preprocessing</h3>
+                <div className="space-y-3 text-white/80">
                   <div>
-                    <span className="font-medium">Role:</span> Founder & Owner
+                    <span className="font-medium text-yellow-200">Target Variable:</span>
+                    <ul className="mt-1 ml-4 space-y-1">
+                      <li>• <strong>IS_SUCCESSFUL:</strong> Indicates if the organization's funding was used effectively</li>
+                    </ul>
                   </div>
                   <div>
-                    <span className="font-medium">Location:</span> Mesa, Arizona
+                    <span className="font-medium text-yellow-200">Feature Variables:</span>
+                    <p className="mt-1 ml-4">All variables in the dataset except for key identifier columns and the target (e.g., APPLICATION_TYPE, AFFILIATION, CLASSIFICATION, USE_CASE, ORGANIZATION, STATUS, INCOME_AMT, SPECIAL_CONSIDERATIONS, ASK_AMT, etc.)</p>
                   </div>
                   <div>
-                    <span className="font-medium">Status:</span> Active
-                  </div>
-                  <div>
-                    <span className="font-medium">Founded:</span> 2023
-                  </div>
-                  <div className="col-span-2">
-                    <span className="font-medium">Website:</span> https://joypop.jp/
+                    <span className="font-medium text-yellow-200">Variables Removed:</span>
+                    <ul className="mt-1 ml-4 space-y-1">
+                      <li>• <strong>EIN</strong> and <strong>NAME</strong> were dropped since they serve only as identifiers and offer no predictive value</li>
+                    </ul>
                   </div>
                 </div>
               </div>
-              {/* Contact Information */}
+              {/* Performance Optimization */}
+              <div className="bg-white/5 border-l-4 border-orange-400 rounded-lg p-6">
+                <h3 className="text-xl font-semibold mb-2 text-orange-200">Steps Taken to Improve Performance</h3>
+                <ul className="text-white/80 space-y-1">
+                  <li>• <strong>Feature Engineering:</strong> Grouping rare categories, one-hot encoding, and feature selection via Random Forest importance</li>
+                  <li>• <strong>Network Optimization:</strong> Adjusting architecture (by increasing neurons and layers), changing activation functions to "swish", using Batch Normalization, and optimizing dropout rates</li>
+                  <li>• <strong>Training Adjustments:</strong> Tuning the learning rate, employing callbacks, and experimenting with epoch count and batch size</li>
+                </ul>
+              </div>
+              {/* Results & Recommendations */}
               <div className="bg-white/5 border-l-4 border-red-400 rounded-lg p-6">
-                <h3 className="text-xl font-semibold mb-2 text-red-200">Contact Information</h3>
+                <h3 className="text-xl font-semibold mb-2 text-red-200">Results & Recommendations</h3>
+                <div className="space-y-3 text-white/80">
+                  <div>
+                    <span className="font-medium text-red-200">Overall Results:</span>
+                    <p className="mt-1 ml-4">Despite extensive tuning and optimization, our deep learning model plateaued at about 72% accuracy. This suggests that the predictive signal in the provided features may be inherently limited.</p>
+                  </div>
+                  <div>
+                    <span className="font-medium text-red-200">Recommendation for Alternative Models:</span>
+                    <p className="mt-1 ml-4">Given the performance ceiling of our neural network, I recommend exploring tree-based models such as Gradient Boosting (e.g., XGBoost or LightGBM). These models are well-suited for structured, tabular data and often outperform deep learning approaches when the dataset is noisy or has limited features.</p>
+                  </div>
+                </div>
+              </div>
+              {/* Instructions */}
+              <div className="bg-white/5 border-l-4 border-indigo-400 rounded-lg p-6">
+                <h3 className="text-xl font-semibold mb-2 text-indigo-200">Instructions to Run the Project</h3>
                 <div className="space-y-2 text-white/80">
-                  <div><span className="font-medium">Phone:</span> (480) 420-4758</div>
-                  <div><span className="font-medium">Email:</span> oliver@joypop.jp</div>
-                  <div><span className="font-medium">Address:</span> 4936 S Power Rd #120, Mesa, AZ 85212</div>
+                  <div>
+                    <span className="font-medium text-indigo-200">1. Clone the Repository:</span>
+                    <div className="mt-1 ml-4 bg-white/10 p-2 rounded font-mono text-sm">
+                      git clone https://github.com/ovonmizener/deep-learning-challenge<br/>
+                      cd deep-learning-challenge
+                    </div>
+                  </div>
+                  <div>
+                    <span className="font-medium text-indigo-200">2. Open Notebooks:</span>
+                    <p className="mt-1 ml-4">Open AlphabetSoupCharity.ipynb or AlphabetSoupCharity_Optimization.ipynb in Google Colab/VS Code (as hardware allows)</p>
+                  </div>
+                  <div>
+                    <span className="font-medium text-indigo-200">3. Ensure Dependencies are Installed:</span>
+                    <p className="mt-1 ml-4">Check the notebook cells for any pip install commands (e.g., !pip install xgboost if using ensemble techniques)</p>
+                  </div>
+                  <div>
+                    <span className="font-medium text-indigo-200">4. Run the Entire Pipeline:</span>
+                    <p className="mt-1 ml-4">Execute data preprocessing, model training, and evaluation</p>
+                  </div>
                 </div>
               </div>
             </div>

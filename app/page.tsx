@@ -1390,7 +1390,7 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
       return <TerminalWindow />
 
     case "sample":
-      return <SampleWindow />
+      return <SampleWindow onOpenWindow={onOpenWindow} />
 
     case "secret-dev-log":
       return <SecretDevLog />;
