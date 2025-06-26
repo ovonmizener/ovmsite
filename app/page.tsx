@@ -2,27 +2,31 @@
 
 import { useState, useEffect, useRef, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { User, Briefcase, Mail, Monitor, ImageIcon, Power, Users, Building2, FileText, Trash2 } from "lucide-react"
+import { User, Briefcase, Mail, Monitor, ImageIcon, Power, Users, Building2, FileText, Trash2, Folder } from "lucide-react"
 import VistaTaskbar from "@/components/vista-taskbar"
 import VistaWindow from "@/components/vista-window"
 import VistaOrb from "@/components/vista-orb"
 import DesktopIcon from "@/components/desktop-icon"
 import PerformanceMonitorWindow from "./components/PerformanceMonitorWindow"
+import GalleryWindow from "./components/GalleryWindow"
 import Image from "next/image"
 import React from "react"
 import Cookies from "js-cookie"
 import TerminalWindow from "./components/TerminalWindow"
 import { getSkillsList } from "@/lib/data"
 import BootAnimation from "@/app/components/BootAnimation"
+import SampleWindow from "./components/SampleWindow"
+import ModelViewer from './components/ModelViewer'
+import SecretDevLog from "./components/SecretDevLog"
 
 const initialIcons = [
   { id: "about", name: "About Me", icon: User, gridX: 0, gridY: 0 },
   { id: "social", name: "Social Media", icon: Users, gridX: 1, gridY: 0 },
-  { id: "projects", name: "Projects", icon: Briefcase, gridX: 0, gridY: 1 },
   { id: "businesses", name: "Businesses", icon: Building2, gridX: 0, gridY: 2 },
   { id: "writing-samples", name: "Writing Samples", icon: FileText, gridX: 0, gridY: 3 },
   { id: "contact", name: "Contact", icon: Mail, gridX: 0, gridY: 4 },
   { id: "gallery", name: "Gallery", icon: ImageIcon, gridX: 0, gridY: 5 },
+  { id: "sample", name: "Projects", icon: Folder, gridX: 0, gridY: 1 },
   { id: "recycle-bin", name: "Recycle Bin", icon: Trash2, gridX: 1, gridY: 1 },
 ]
 
@@ -451,7 +455,7 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
             <div className="absolute bottom-20 left-1/4 w-40 h-40 bg-pink-500/10 rounded-full blur-xl animate-pulse delay-2000"></div>
           </div>
 
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6 relative z-10">Connect With Me</h2>
+          <h2 className="text-3xl font-bold vista-text-glow mb-6 relative z-10">Connect With Me</h2>
           
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -568,7 +572,7 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
     case "about":
       return (
         <div className="text-white max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6">About Oliver</h2>
+          <h2 className="text-3xl font-bold vista-text-glow mb-6">About Oliver</h2>
           <div className="space-y-4 text-white/90">
             <div className="relative mb-8">
               <div className="float-left mr-8 mb-4">
@@ -713,7 +717,7 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
     case "projects":
       return (
         <div className="text-white">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6">My Projects</h2>
+          <h2 className="text-3xl font-bold vista-text-glow mb-6">My Projects</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
               { 
@@ -773,7 +777,7 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
     case "businesses":
       return (
         <div className="text-white">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-8">Business Ventures</h2>
+          <h2 className="text-3xl font-bold vista-text-glow mb-8">Business Ventures</h2>
           
           {/* JoyPop Business Card */}
           <motion.div
@@ -872,7 +876,7 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
     case "writing-samples":
       return (
         <div className="text-white">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6">Writing Samples</h2>
+          <h2 className="text-3xl font-bold vista-text-glow mb-6">Writing Samples</h2>
           <div className="space-y-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -912,7 +916,7 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
     case "music-sentiment":
       return (
         <div className="text-white">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6">Sonic Sentiments – Music Sentiment Analyzer</h2>
+          <h2 className="text-3xl font-bold vista-text-glow mb-6">Sonic Sentiments – Music Sentiment Analyzer</h2>
           <div className="space-y-6">
             {/* GitHub Link at the Top */}
             <div className="pb-2">
@@ -950,7 +954,7 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
     case "asu-bootcamp":
       return (
         <div className="text-white">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6">ASU Data Analytics Boot Camp</h2>
+          <h2 className="text-3xl font-bold vista-text-glow mb-6">ASU Data Analytics Boot Camp</h2>
           <div className="aero-glass rounded-lg p-6">
             <p className="text-white/80 mb-4">Deep learning challenge project from the ASU Data Analytics Boot Camp.</p>
             <a 
@@ -971,7 +975,7 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
     case "flappy-bird":
       return (
         <div className="text-white">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6">Python Game - Jetpack Escape</h2>
+          <h2 className="text-3xl font-bold vista-text-glow mb-6">Python Game - Jetpack Escape</h2>
           <div className="aero-glass rounded-lg p-6">
             <p className="text-white/80 mb-4">Just for fun, I started making a "Flappy Bird" style game in Python. It's themed after popular streamer Raora, and her character Chattino. I'm just doing this for the experience, I may never finish it, but I wanted a repository available so I can share with friends. Feel free to take/use/modify this however you want. For source code and more details, please visit the GitHub repository.</p>
             <div className="space-y-4">
@@ -1024,7 +1028,7 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
     case "joypop":
       return (
         <div className="text-white">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6">JoyPop Boba Cafe</h2>
+          <h2 className="text-3xl font-bold vista-text-glow mb-6">JoyPop Boba Cafe</h2>
 
           {/* Responsive Image Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
@@ -1081,7 +1085,7 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
     case "portfolio":
       return (
         <div className="text-white">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6">This Website – Portfolio Project</h2>
+          <h2 className="text-3xl font-bold vista-text-glow mb-6">This Website – Portfolio Project</h2>
           <div className="space-y-6">
             {/* Ethos & Inspiration */}
             <div className="bg-white/5 border-l-4 border-cyan-400 rounded-lg p-6">
@@ -1140,7 +1144,7 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
     case "coming-soon":
       return (
         <div className="text-white">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6">Coming Soon</h2>
+          <h2 className="text-3xl font-bold vista-text-glow mb-6">Coming Soon</h2>
           <div className="aero-glass rounded-lg p-6">
             <p className="text-white/80 mb-4">More exciting projects are in development...</p>
           </div>
@@ -1150,10 +1154,22 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
     case "contact":
       return (
         <div className="text-white">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6">Get In Touch</h2>
+          <h2 className="text-3xl font-bold vista-text-glow mb-6">Get In Touch</h2>
           <div className="space-y-6">
             <div className="aero-glass rounded-lg p-6">
               <h3 className="font-semibold mb-4">Send me a message</h3>
+              <p className="text-white/70 text-sm mb-4">
+                Note: This contact form is not currently working. Please connect with me on{" "}
+                <a 
+                  href="https://linkedin.com/in/olivervonmizener" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-blue-300 hover:text-blue-200 underline transition-colors"
+                >
+                  LinkedIn
+                </a>{" "}
+                if you'd like to reach me.
+              </p>
               <form className="space-y-4">
                 <input
                   type="text"
@@ -1181,65 +1197,16 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
       )
 
     case "gallery":
-      return (
+      return setSelectedImage ? (
+        <GalleryWindow onOpenWindow={onOpenWindow} setSelectedImage={setSelectedImage} />
+      ) : (
         <div className="text-white">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6">Gallery</h2>
-          <h3 className="text-xl font-semibold mb-4 text-white/90">Project Gallery</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {[...Array(15)].map((_, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.1 }}
-                className="aero-glass rounded-lg p-4 aspect-square relative group overflow-hidden cursor-pointer"
-                onClick={() => {
-                  if (setSelectedImage && onOpenWindow) {
-                    const imageData = {
-                      src: `/gallery/photo-${i + 1}.jpg`,
-                      alt: `Gallery photo ${i + 1}`
-                    };
-                    setSelectedImage(imageData);
-                    onOpenWindow("image-viewer");
-                  }
-                }}
-              >
-                <div className="absolute inset-0">
-                  <Image
-                    src={`/gallery/photo-${i + 1}.jpg`}
-                    alt={`Gallery photo ${i + 1}`}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <button className="text-white/80 hover:text-white transition-colors">
-                    <svg
-                      className="w-6 h-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </motion.div>
-            ))}
+          <h2 className="text-3xl font-bold vista-text-glow mb-6">Gallery</h2>
+          <div className="text-center text-white/60 py-12">
+            <p>Gallery is not available.</p>
           </div>
         </div>
-      )
+      );
 
     case "image-viewer":
       return <ImageViewer selectedImage={selectedImage} />;
@@ -1247,7 +1214,7 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
     case "wallpapers":
       return (
         <div className="text-white">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6">Desktop Wallpapers</h2>
+          <h2 className="text-3xl font-bold vista-text-glow mb-6">Desktop Wallpapers</h2>
           <div className="mb-8">
             <h3 className="text-xl font-semibold mb-4 text-white/90">Choose a Wallpaper</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -1342,7 +1309,7 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
     case "recycle-bin":
       return (
         <div className="text-white">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6">Recycle Bin</h2>
+          <h2 className="text-3xl font-bold vista-text-glow mb-6">Recycle Bin</h2>
           <div className="space-y-4">
             <div className="aero-glass rounded-lg p-4 cursor-pointer hover:bg-white/10 transition-colors"
                  onClick={() => onOpenWindow("text-editor")}>
@@ -1385,7 +1352,7 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
     case "ipodfiller":
       return (
         <div className="text-white">
-          <h2 className="text-3xl font-bold vista-text-gradient mb-6">ipodfiller App</h2>
+          <h2 className="text-3xl font-bold vista-text-glow mb-6">ipodfiller App</h2>
           <img
             src="/images/ipodfiller-screenshot.png"
             alt="ipodfiller app screenshot"
@@ -1420,6 +1387,12 @@ function WindowContent({ windowId, onWallpaperChange, wallpapers, onOpenWindow, 
 
     case "terminal":
       return <TerminalWindow />
+
+    case "sample":
+      return <SampleWindow onOpenWindow={onOpenWindow} />
+
+    case "secret-dev-log":
+      return <SecretDevLog />;
 
     default:
       return (
@@ -2050,7 +2023,7 @@ export default function VistaDesktop() {
                 initialX={win.x}
                 initialY={win.y}
               >
-                <div className={win.id === "flappy-bird-game" || win.id === "terminal" || win.id === "browser" ? "h-full" : "p-8"}>
+                <div className={win.id === "flappy-bird-game" || win.id === "terminal" || win.id === "browser" || win.id === "sample" ? "h-full" : "p-8"}>
                   <WindowContent 
                     windowId={win.id} 
                     onWallpaperChange={changeWallpaper} 

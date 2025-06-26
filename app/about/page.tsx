@@ -74,7 +74,7 @@ export default function AboutPage() {
             </motion.div>
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-vista-gradient shine">About Oliver</h1>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 vista-text-glow shine">About Oliver</h1>
           <div className="glass rounded-3xl p-8 max-w-3xl mx-auto">
             <p className="text-xl text-aero-blue-800 dark:text-aero-blue-200 leading-relaxed">
               Hey, I'm Oliver—part legal technologist, part data nerd, part boba-slinging entrepreneur.

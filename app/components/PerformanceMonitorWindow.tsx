@@ -49,7 +49,7 @@ export default function PerformanceMonitorWindow() {
   return (
     <div className="w-full h-full flex flex-col bg-white/10 rounded-lg shadow-xl p-0 aero-glass overflow-hidden">
       <div className="px-6 pt-6 pb-2">
-        <h2 className="text-2xl font-bold vista-text-gradient flex items-center">
+        <h2 className="text-2xl font-bold vista-text-glow flex items-center">
           <Monitor className="w-6 h-6 mr-2" /> Performance Monitor
         </h2>
       </div>
