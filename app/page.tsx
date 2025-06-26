@@ -22,12 +22,11 @@ import SecretDevLog from "./components/SecretDevLog"
 const initialIcons = [
   { id: "about", name: "About Me", icon: User, gridX: 0, gridY: 0 },
   { id: "social", name: "Social Media", icon: Users, gridX: 1, gridY: 0 },
-  { id: "projects", name: "Projects", icon: Briefcase, gridX: 0, gridY: 1 },
   { id: "businesses", name: "Businesses", icon: Building2, gridX: 0, gridY: 2 },
   { id: "writing-samples", name: "Writing Samples", icon: FileText, gridX: 0, gridY: 3 },
   { id: "contact", name: "Contact", icon: Mail, gridX: 0, gridY: 4 },
   { id: "gallery", name: "Gallery", icon: ImageIcon, gridX: 0, gridY: 5 },
-  { id: "sample", name: "Sample", icon: Folder, gridX: 1, gridY: 2 },
+  { id: "sample", name: "Projects", icon: Folder, gridX: 0, gridY: 1 },
   { id: "recycle-bin", name: "Recycle Bin", icon: Trash2, gridX: 1, gridY: 1 },
 ]
 

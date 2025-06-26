@@ -45,6 +45,14 @@ export default function GalleryWindow({ onOpenWindow, setSelectedImage }: Galler
     return (
       <div className="text-white">
         <h2 className="text-3xl font-bold vista-text-glow mb-6">Gallery</h2>
+        
+        {/* Work in Progress Message */}
+        <div className="aero-glass rounded-lg p-4 mb-6 border-l-4 border-yellow-400">
+          <p className="text-white/90 text-sm">
+            This section is still a work in progress. Please revisit at another date to view my film photography and other visual work.
+          </p>
+        </div>
+        
         <div className="flex items-center justify-center h-64">
           <div className="text-white/60">Loading gallery...</div>
         </div>
@@ -55,6 +63,13 @@ export default function GalleryWindow({ onOpenWindow, setSelectedImage }: Galler
   return (
     <div className="text-white">
       <h2 className="text-3xl font-bold vista-text-glow mb-6">Gallery</h2>
+      
+      {/* Work in Progress Message */}
+      <div className="aero-glass rounded-lg p-4 mb-6 border-l-4 border-yellow-400">
+        <p className="text-white/90 text-sm">
+          This section is still a work in progress. Please revisit at another date to view my film photography and other visual work.
+        </p>
+      </div>
       
       {/* Category Filter */}
       <div className="mb-6">
